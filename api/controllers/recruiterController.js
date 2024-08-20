@@ -1,6 +1,6 @@
 //importing data models
 const Opportunity = require('../models/opportunityModel');
-const mongoose = require('mongoose');
+const Application = require('../models/applicationModel');
 
 
 //GET all volunteering opportunities created by the recruiter
@@ -11,8 +11,8 @@ const getOpportunities = async(req, res)=> {
 
 //GET a single volunteering opprotunity 
 const getOpportunity = async(req, res) => {
-    const {id} = req.params.id;
-    const opportunity = await Opportunity.findById(id);
+    const {id} = req.params;
+    const opportunity = await Opportunity.findById({_id : id});
     if(!opportunity) {
         return res.status(404).json({error: "Volunteering Opportunity not found"});
     }
@@ -36,7 +36,7 @@ const createOpportunity = async(req, res) => {
     
     try{
         //add doc to db
-        const newOpportunity = new Opportunity.create({
+        const newOpportunity = await Opportunity.create({
             title,
             description,
             categories,
@@ -58,7 +58,7 @@ const createOpportunity = async(req, res) => {
 const deleteOpportunity = async(req, res) => {
     const {id} = req.params;
     try{
-        const removedOpportunity = await Opportunity.findById({_id: id});
+        const removedOpportunity = await Opportunity.findOneAndDelete({_id: id});
 
         if(!removedOpportunity){
             return res.status(404).json({error: "Volunteering Opportunity not found"});
@@ -89,9 +89,53 @@ const updateOpportunity = async(req, res) => {
 
 
 //GET all volunteer applications
-
+const getApplications = async(req, res) => {
+    const applications = await Application.find({}).sort({createdAt : -1});
+    res.status(200).json(applications);
+};
 
 //UPDTAE/PATCH volunteer application
+const updateApplicationStatus = async(req, res) => {
+    const { id } = req.params; 
+    const { status } = req.body; 
+
+    const validStatuses = ['Accepted', 'Rejected', 'Pending'];
+    if (!validStatuses.includes(status)) {
+        return res.status(400).json({ error: "Invalid status value provided" });
+    }
+
+    try {
+        const updatedApplication = await Application.findByIdAndUpdate(
+            id, 
+            { status },
+            { new: true } // This returns the updated document
+        );
+
+        if (!updatedApplication) {
+            return res.status(404).json({ error: "Application not found" });
+        }
+
+        res.status(200).json(updatedApplication);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Server Error: Could not update application status" });
+    }
+};
+
+//DELETE a volunteer application
+const deleteApplication = async(req, res) => {
+    const {id} = req.params;
+    try{
+        const removedApplication = await Application.findOneAndDelete({_id: id});
+
+        if(!removedApplication){
+            return res.status(404).json({error: "Volunteering Application not found"});
+        }
+        res.status(200).json(removedApplication);
+    }catch(error){
+        res.status(400).json({error: "Server Error: Could not delete application"});
+    }
+};
 
 //GET a volunteer profile
 
@@ -113,5 +157,8 @@ module.exports = {
     getOpportunity,
     createOpportunity,
     deleteOpportunity,
-    updateOpportunity
+    updateOpportunity,
+    getApplications,
+    updateApplicationStatus,
+    deleteApplication
 };

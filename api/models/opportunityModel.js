@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const opportunitySchema = new Schema({
+    recruiterId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Recruiter',
+        required: false
+    },
     title: {
         type: String,
         required: true,
@@ -47,4 +52,4 @@ const opportunitySchema = new Schema({
     },
 },{timestamps : true});
 
-mongoose.exports = mongoose.model('Opportunity',opportunitySchema);
+module.exports = mongoose.model('Opportunity',opportunitySchema);

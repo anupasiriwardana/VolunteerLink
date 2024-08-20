@@ -7,7 +7,11 @@ const {
     getOpportunity,
     createOpportunity,
     deleteOpportunity,
-    updateOpportunity} = require('../controllers/recruiterController');
+    updateOpportunity,
+    getApplications,
+    updateApplicationStatus,
+    deleteApplication
+} = require('../controllers/recruiterController');
 
 //GET all volunteering opportunities created by the recruiter
 router.get('/opportunities',getOpportunities);
@@ -24,10 +28,16 @@ router.delete('/opportunities/:id',deleteOpportunity);
 //UPDATE a volunteering opportunity
 router.patch('/opportunities/:id',updateOpportunity);
 
-//GET all volunteer applications
 
+//GET all volunteer applications
+router.get('/applications',getApplications);
 
 //UPDTAE/PATCH volunteer application
+router.patch('/applications/:id',updateApplicationStatus);
+
+//DELETE a volunteer application
+router.delete('/applications/:id',deleteApplication);
+
 
 //GET a volunteer profile
 

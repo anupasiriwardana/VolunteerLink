@@ -16,8 +16,6 @@ app.use((req,next) => {
 //routes
 app.use('/api/recruiter', recruiterRoutes);
 
-const URI = 'mongodb+srv://anupa:test1234@nodetuts.4kcfy6d.mongodb.net/VolunteerLink?retryWrites=true&w=majority&appName=Nodetuts';
-
 //listen for requests
 //Connecting to DB
 mongoose.connect(process.env.MONGO_URI)

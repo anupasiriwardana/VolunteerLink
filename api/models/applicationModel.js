@@ -2,20 +2,13 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const applicationSchema = new Schema({
-    recruiterId:{
-        type: Schema.Types.ObjectId,
-        ref: 'Recruiter',
-        required: false
-    },
     volunteerId: {
         type: Schema.Types.ObjectId,
-        ref: 'Volunteer',
-        required : false
+        required : true
     },
     opportunityId : {
         type: Schema.Types.ObjectId,
-        ref: 'Opportunity',
-        required : false
+        required : true
     },
     applicationDate : {
         type: Date,

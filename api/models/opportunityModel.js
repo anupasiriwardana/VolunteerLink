@@ -4,8 +4,11 @@ const Schema = mongoose.Schema;
 const opportunitySchema = new Schema({
     recruiterId: {
         type: Schema.Types.ObjectId,
-        ref: 'Recruiter',
-        required: false
+        required: true
+    },
+    organizationId:{
+        type: Schema.Types.ObjectId,
+        required: false //need only if the recruiter is organization-represebter
     },
     title: {
         type: String,

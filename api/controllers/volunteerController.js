@@ -58,32 +58,32 @@ const getVolunteerDetails = async (req, res) => {
 };
 
 
-//PATCH volunteer details
+//PATCH -update volunteer profile or details
 const updateVolunteerDetails = async (req, res) => {
     const { volunteerId } = req.params;
 
     try {
-        // Updating Volunteer model
+        // excluding volunteerId from request body if there's one
+        const { volunteerId: _omit, ...updateFields } = req.body;
+
         const updatedVolunteer = await Volunteer.findByIdAndUpdate(
             volunteerId,
-            { ...req.body },
+            { ...updateFields }, 
             { new: true }
         );
-        if(!updatedVolunteer){
+        if (!updatedVolunteer) {
             return res.status(404).json({ error: "Volunteer not found" });
         }
 
-        // Updating VolunteerDetails model
         const updatedVolunteerDetails = await VolunteerDetails.findOneAndUpdate(
             { volunteerId },
-            { ...req.body },
+            { ...updateFields },  
             { new: true }
         );
         if (!updatedVolunteerDetails) {
             return res.status(404).json({ error: "Volunteer details not found" });
         }
 
-        // Return the updated data
         return res.status(200).json({ updatedVolunteer, updatedVolunteerDetails });
     } catch (error) {
         res.status(500).json({ error: "Server Error: Could not update volunteer details" });
@@ -132,7 +132,8 @@ const createApplication = async (req, res) => {
 };
 
 
-//GET all applications
+//GET all applications 
+//here we hv to update when an opportunity is deleted -> application should return as an error msg
 const getAllApplications = async (req, res) => {
     const { volunteerId } = req.body; 
 
@@ -158,17 +159,19 @@ const updateApplication = async (req, res) => {
             return res.status(404).json({ error: "Application not found" });
         }
 
-        // Checking if the application status is accepted or rejected
         if (existingApplication.status === 'Accepted' || existingApplication.status === 'Rejected') {
             return res.status(400).json({ error: "Cannot update application that has been accepted or rejected" });
         }
 
-        //updatin application
+        // removing status field from request body if sent
+        const { status: _omit, ...updateFields } = req.body;
+
         const updatedApplication = await Application.findByIdAndUpdate(
             applicationId,
-            { ...req.body },
-            { new: true } 
+            { ...updateFields }, 
+            { new: true }
         );
+
         res.status(200).json(updatedApplication);
     } catch (error) {
         res.status(500).json({ error: "Server Error: Could not update application" });

@@ -8,7 +8,17 @@ export default {
     flowbite.content(),
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        karla: ['Karla', 'sans-serif'],
+        dmserif:['DM Serif Text', 'serif'],
+      },
+
+      colors: {
+        customGreen: '#1aac83',
+      },
+
+    },    
   },
   plugins: [
     flowbite.plugin(),

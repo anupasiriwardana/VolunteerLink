@@ -19,11 +19,11 @@ const Navbar = () => {
          <div className="hidden md:block">           
             <div className="ml-10 flex items-center space-x-4">
 
-              <Link to="/find-opportunities" className="text-gray-700 hover:text-customGreen px-3 py-2 rounded-md text-sm font-medium">
+              <Link to="/vol-sign-up" className="text-gray-700 hover:text-customGreen px-3 py-2 rounded-md text-sm font-medium">
                 Find Opportunities
               </Link>
 
-              <Link to="/recruit-volunteers" className="text-gray-700 hover:text-customGreen px-3 py-2 rounded-md text-sm font-medium">
+              <Link to="/rec-sign-up" className="text-gray-700 hover:text-customGreen px-3 py-2 rounded-md text-sm font-medium">
                 Recruit Volunteers
               </Link>
 
@@ -33,7 +33,6 @@ const Navbar = () => {
                 About
               </Link>
               
-
               <button className='bg-green-500 hover:bg-green-700 p-3 shadow-md hover:shadow-lg transition-shadow duration-300n'>
               <Link to="/sign-in" className="text-white hover:text-gray-200 px-3 py-2 rounded-md text-sm font-medium">
                 Sign In
@@ -69,10 +68,10 @@ const Navbar = () => {
         <div className="md:hidden" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             
-            <Link to="/find-opportunities" className="text-gray-700 hover:text-customGreen block px-3 py-2 rounded-md text-base font-medium">
+            <Link to="/vol-sign-up" className="text-gray-700 hover:text-customGreen block px-3 py-2 rounded-md text-base font-medium">
               Find Opportunities
             </Link>
-            <Link to="/recruit-volunteers" className="text-gray-700 hover:text-customGreen block px-3 py-2 rounded-md text-base font-medium">
+            <Link to="/rec-sign-up" className="text-gray-700 hover:text-customGreen block px-3 py-2 rounded-md text-base font-medium">
               Recruit Volunteers
             </Link>
             <Link to="/about" className="text-gray-700 hover:text-customGreen block px-3 py-2 rounded-md text-base font-medium">

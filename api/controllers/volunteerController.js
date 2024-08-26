@@ -6,7 +6,7 @@ const  Application  = require('../models/applicationModel');
 
 //volunteer signup - create POST volunteer
 const createVolunteer = async (req, res) => {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password } = req.body;  
 
     try {
         const newVolunteer = await Volunteer.create({ firstName, lastName, email, password });

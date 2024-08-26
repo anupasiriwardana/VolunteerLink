@@ -1,5 +1,7 @@
 import React from 'react';
 import home_1 from '../assets/home_1.jpg';
+import home_2 from '../assets/home_2.jpg';
+
 
 export default function Home() {
   return (
@@ -57,12 +59,28 @@ export default function Home() {
               Get started as a volunteer
             </button>
           </div>
-
-
-
         </div>
-      
+
 {/* section three */}
+        <div className='p-10'>
+          <div className="relative w-full h-96"> {/* Changed from h-screen to h-96 */}
+            <img src={home_2} alt="Home Image 2" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-black opacity-70"></div>
+
+            <div className="absolute inset-0 flex items-center justify-center z-10 text-white p-4">
+              <div className="text-center px-20">
+                <h1 className="text-4xl font-karla font-extrabold">Why VolunteerLink?</h1>
+                <br />
+                <p className='font-karla'>
+                  Our platform allows organizations to post volunteer roles, reach a wide audience, and find the right candidates quickly and efficiently. We offer tools and resources that support both volunteers and recruiters, ensuring that everyone involved in the process has a positive, impactful experience. Whether you're looking to give back, gain experience, or find passionate individuals to support your cause, VolunteerLink is here to help you make a difference.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      
+{/* section four */}
         <div className="relative inset-0 grid grid-cols-1 md:grid-cols-2 gap-10 p-24 font-karla z-10">
           <div className="text-left text-black">
             <h2 className="text-5xl mb-2 font-dmserif font-thin">Looking <br/> for volunteers?</h2>
@@ -70,8 +88,8 @@ export default function Home() {
 
             <br/>
             <p className='text-gray-700'>
-            Finding the right volunteers can be a game-changer for your organization. Volunteers bring passion, energy, and fresh perspectives that can help drive your mission forward. By engaging volunteers, you not only expand your workforce but also create a community of advocates who are deeply invested in your cause. <br/><br/>Whether you're running a small nonprofit, a large organization or an individual, having a strong volunteer base can amplify your impact and help you achieve your goals more effectively.
-</p>
+              Finding the right volunteers can be a game-changer for your organization. Volunteers bring passion, energy, and fresh perspectives that can help drive your mission forward. By engaging volunteers, you not only expand your workforce but also create a community of advocates who are deeply invested in your cause. <br/><br/>Whether you're running a small nonprofit, a large organization or an individual, having a strong volunteer base can amplify your impact and help you achieve your goals more effectively.
+            </p>
           </div>
 
           <div className="text-left text-black m-9">

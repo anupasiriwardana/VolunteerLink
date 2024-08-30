@@ -46,8 +46,12 @@ const createRecruiter = async (req, res) => {
     const { firstName, lastName, email, organizationOrIndependent, password } = req.body;
 
     try {
+        //checking if the email is already used by anothr recruiter, volunter, or admin
         const existingRecruiter = await Recruiter.findOne({ email });
-        if (existingRecruiter) {
+        const existingAdmin = await Admin.findOne({email});
+        const existingVolunteer = await Volunteer.findOne({email});
+
+        if (existingRecruiter || existingAdmin || existingVolunteer) {
             return res.status(400).json({ error: "Email is already in use" });
         }
 
@@ -167,8 +171,12 @@ const createVolunteer = async (req, res) => {
     const { firstName, lastName, email, organizationOrIndependent, password } = req.body;
 
     try {
-        const exisitngVolunteer = await Volunteer.findOne({ email });
-        if (exisitngVolunteer) {
+        //checking if the email is already used by anothr recruiter, volunter, or admin
+        const existingRecruiter = await Recruiter.findOne({ email });
+        const existingAdmin = await Admin.findOne({email});
+        const existingVolunteer = await Volunteer.findOne({email});
+
+        if (existingRecruiter || existingAdmin || existingVolunteer) {
             return res.status(400).json({ error: "Email is already in use" });
         }
 

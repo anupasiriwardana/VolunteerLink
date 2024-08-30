@@ -2,6 +2,7 @@
 const { Volunteer , VolunteerDetails } = require('../models/volunteerUserModel');
 const  Opportunity  = require('../models/opportunityModel');
 const  Application  = require('../models/applicationModel');
+const { Recruiter } = require('../models/recruiterUserModel');
 
 
 //volunteer signup - create POST volunteer
@@ -9,8 +10,12 @@ const createVolunteer = async (req, res) => {
     const { firstName, lastName, email, password } = req.body;  
 
     try {
-        const existingVolunteer = await Volunteer.findOne({ email });
-        if (existingVolunteer) {
+        //checking if the email is already used by anothr recruiter, volunter, or admin
+        const existingVolunteer = await Volunteer.findOne({email});
+        const existingRecruiter = await Recruiter.findOne({ email });
+        const existingAdmin = await Admin.findOne({email});
+
+        if (existingRecruiter || existingAdmin || existingVolunteer) {
             return res.status(400).json({ error: "Email is already in use" });
         }
 

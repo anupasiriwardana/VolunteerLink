@@ -8,6 +8,7 @@ import VolSignUp from './Pages/VolSignUp'
 import RecSignUp from './Pages/RecSignUp'
 import VolDashboard from './Pages/VolDashboard'
 import RecDashboard from './Pages/RecDashboard'
+import RecDashCreateProject from './Components/RecDashCreateProject'
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="/rec-sign-up" element={<RecSignUp/>}/>
           <Route path="/vol-dashboard" element={<VolDashboard/>}/>
           <Route path="/rec-dashboard" element={<RecDashboard/>}/>
+          <Route path="/rec-dashCreateProject" element={<RecDashCreateProject/>}/>
         {/* dashboards should be be accessed through private route upon sign in, refer mern blog
         <Route element={<PrivateRoute/>}>
         </Route>

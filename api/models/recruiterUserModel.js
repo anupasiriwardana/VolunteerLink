@@ -16,7 +16,7 @@ const recruiterSchema = new Schema({
     },
     organizationOrIndependent: {
         type: String,
-        //enum: ['Organization-representer', 'Independent'], // Radio button-like options
+        //enum: ['Organization-representer', 'Independent'], 
         required: true,
     },
     password : {

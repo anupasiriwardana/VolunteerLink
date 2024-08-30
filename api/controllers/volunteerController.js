@@ -3,6 +3,7 @@ const { Volunteer , VolunteerDetails } = require('../models/volunteerUserModel')
 const  Opportunity  = require('../models/opportunityModel');
 const  Application  = require('../models/applicationModel');
 const { Recruiter } = require('../models/recruiterUserModel');
+const Admin = require('../models/adminModel');
 
 
 //volunteer signup - create POST volunteer
@@ -23,6 +24,7 @@ const createVolunteer = async (req, res) => {
         const newVolunteer = await Volunteer.create({ firstName, lastName, email, password });
         res.status(201).json(newVolunteer);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Server Error: Could not create volunteer" });
     }
 };

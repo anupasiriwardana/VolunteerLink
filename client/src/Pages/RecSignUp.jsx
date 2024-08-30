@@ -37,7 +37,7 @@ export default function SignUp() {
       });
       const data = await res.json();
       if(data.success === false){
-        return setErrorMessage(data.message); //eg: when the email already exists
+        return setErrorMessage(data.error); //eg: when the email already exists
       }
       setLoading(false);
       if(res.ok){

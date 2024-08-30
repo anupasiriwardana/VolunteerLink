@@ -22,7 +22,7 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault(); //to prevent default refreshing of the page upon submission
       //if the user leaves something empty, set the error
-    if(!formData.firstName || !formData.lastName || !formData.email || !formData.password || !(!formData.independant || !formData.organization) ){
+    if(!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.organizationOrIndependent ){
       return setErrorMessage('Please fill out all fields');
     }
 
@@ -36,7 +36,8 @@ export default function SignUp() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      if(data.success === false){
+      if(!res.ok){
+        setLoading(false);
         return setErrorMessage(data.error); //eg: when the email already exists
       }
       setLoading(false);
@@ -86,8 +87,8 @@ export default function SignUp() {
               <TextInput type='password' placeholder='password' id='password'  onChange={handleChange}/>
             </div>
             <div className='flex justify-around items-center'>
-              <Radio name='recruiterType' id='independent' className='mr-3 p-2' onChange={handleChange}/><Label value=" I'm an Independent Recruiter"/>
-              <Radio name='recruiterType' id='organization' className='mr-3 p-2' onChange={handleChange}/><Label value=" I represent an Organization"/>
+              <Radio name='recruiterType' id='Independent' className='mr-3 p-2' onChange={handleChange}/><Label value=" I'm an Independent Recruiter"/>
+              <Radio name='recruiterType' id='Organization-representer' className='mr-3 p-2' onChange={handleChange}/><Label value=" I represent an Organization"/>
             </div>
             {/* shows a loading effect after clicking. During the loading mode(loading=true), button will be disabled.*/}
             <Button className="bg-green-500" type='submit' >

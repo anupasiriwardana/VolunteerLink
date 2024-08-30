@@ -10,14 +10,15 @@ const {
     updateOpportunity,
     getApplications,
     updateApplicationStatus,
-    deleteApplication,
+    //deleteApplication,
     getOrganization,
     createOrganization,
     updateOrganization,
     createRecruiter,
     saveIndependentRecruiterDetails,
     getRecruiter,
-    updateRecruiter
+    updateRecruiter,
+    getVolunteerProfile
 } = require('../controllers/recruiterController');
 
 //recruiter signup - CREATE recruiter
@@ -63,14 +64,14 @@ router.delete('/opportunities',deleteOpportunity);
 router.get('/applications',getApplications);
 
 //UPDTAE/PATCH volunteer application
-router.patch('/applications/:id',updateApplicationStatus);
+router.patch('/applications/:applicationId',updateApplicationStatus);
 
 //DELETE a volunteer application
-router.delete('/applications/:id',deleteApplication);
+//router.delete('/applications/:id',deleteApplication);
 
 
 //GET a volunteer profile
-router.get('/applications/volunteer/:id');
+router.get('/applications/volunteerprofile/:applicationId',getVolunteerProfile);
 
 
 

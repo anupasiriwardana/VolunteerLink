@@ -1,3 +1,4 @@
+
 Color palette:
         green -> #laac83 -> customGreen in tailwind.config.js
         gray  -> # f1f1f1
@@ -5,3 +6,4 @@ Color palette:
 
 Body font: karla
 Headings font: DM Serif Text
+

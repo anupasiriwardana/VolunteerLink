@@ -3,19 +3,24 @@ const Opportunity = require('../models/opportunityModel');
 const Application = require('../models/applicationModel');
 const Organization = require('../models/organizationModel');
 const { Recruiter, IndependentRecruiter, OrganizationRepresenter } = require('../models/recruiterUserModel');
+const { Volunteer, VolunteerDetails} = require('../models/volunteerUserModel');
 
 //POST / create recruiter-> recruiter signup
-const createRecruiter = async(req, res) => {
+const createRecruiter = async (req, res) => {
     const {
         firstName,
         lastName,
         email,
         organizationOrIndependent,
         password
-      } = req.body; 
-    
-    try{
-        //add doc to db
+    } = req.body;
+
+    try {
+        const existingRecruiter = await Recruiter.findOne({ email });
+        if (existingRecruiter) {
+            return res.status(400).json({ error: "Email is already in use" });
+        }
+
         const newRecruiter = await Recruiter.create({
             firstName,
             lastName,
@@ -23,11 +28,12 @@ const createRecruiter = async(req, res) => {
             organizationOrIndependent,
             password
         });
-        res.status(200).json(newRecruiter);
-    }catch(error){
-        res.status(400).json({error: "Server Error: Could not create recruiter"});
+        res.status(201).json(newRecruiter); // Changed status code to 201 for resource creation
+    } catch (error) {
+        res.status(500).json({ error: "Server Error: Could not create recruiter" });
     }
 };
+
 
 //POST personal details of independent recruiter
 const saveIndependentRecruiterDetails = async(req, res) => {
@@ -79,7 +85,7 @@ const getRecruiter = async (req, res) => {
             const independentRecruiterDetails = await IndependentRecruiter.findOne({ recruiterId: recruiterId });
 
             if (!independentRecruiterDetails) {
-                return res.status(404).json({ error: "Independent recruiter details not found" });
+                return res.status(404).json({ error: "Recruiter details not found" });
             }
             return res.status(200).json({recruiterDetails,independentRecruiterDetails});
         } else {
@@ -99,21 +105,26 @@ const updateRecruiter = async (req, res) => {
         if (!recruiterDetails) {
             return res.status(404).json({ error: "Recruiter not found" });
         }
+
+        // Excluding 'organizationOrIndependent' field(if there's one) from the update
+        const { organizationOrIndependent, ...updateFields } = req.body;
+
         const updatedRecruiter = await Recruiter.findByIdAndUpdate(
             id,
-            { ...req.body },
+            updateFields, // Only update the allowed fields
             { new: true } // Return the updated document
         );
+
         if (recruiterDetails.organizationOrIndependent === 'Independent') {
             const updatedIndependentRecruiter = await IndependentRecruiter.findOneAndUpdate(
                 { recruiterId: id },
-                { ...req.body },
-                { new: true } // Return the updated document
+                updateFields,
+                { new: true }
             );
             if (!updatedIndependentRecruiter) {
-                return res.status(404).json({ error: "Independent recruiter details not found" });
+                return res.status(404).json({ error: "Recruiter details not found" });
             }
-            return res.status(200).json({updatedRecruiter,updatedIndependentRecruiter});
+            return res.status(200).json({ updatedRecruiter, updatedIndependentRecruiter });
         } else {
             return res.status(200).json(updatedRecruiter);
         }
@@ -121,6 +132,7 @@ const updateRecruiter = async (req, res) => {
         res.status(500).json({ error: "Server Error: Could not update recruiter details" });
     }
 };
+
 
 //POST/CREATE organization details
 const createOrganization = async (req, res) => {
@@ -327,7 +339,7 @@ const getOpportunity = async(req, res) => {
 //UPDATE a volunteering opportunity
 const updateOpportunity = async (req, res) => {
     const { opportunityId } = req.params;
-    const { virtualOrInPerson, ...updateFields } = req.body;
+    const { virtualOrInPerson,recruiterId, organizationId, ...updateFields } = req.body;
 
     try {
         // If virtualOrInPerson is "Virtual", set location to null
@@ -365,15 +377,37 @@ const deleteOpportunity = async(req, res) => {
 };
 
 
-//GET all volunteer applications
-const getApplications = async(req, res) => {
-    const applications = await Application.find({}).sort({createdAt : -1});
-    res.status(200).json(applications);
+//GET all volunteer applications based on reccruiter Id
+const getApplications = async (req, res) => {
+    const { recruiterId } = req.body;
+
+    try {
+        // Finding opportunities associated with the recruiterId
+        const opportunities = await Opportunity.find({ recruiterId });
+
+        if (!opportunities || opportunities.length === 0) {
+            return res.status(404).json({ error: "No opportunities found for this recruiter" });
+        }
+
+        // Extracting opportunityIds from the found opportunities
+        const opportunityIds = opportunities.map(opportunity => opportunity._id);
+
+        // Finding all applications associated with the found opportunityIds
+        const applications = await Application.find({ opportunityId: { $in: opportunityIds } });
+        if (!applications || applications.length === 0) {
+            return res.status(404).json({ error: "No applications found for this opportunity" });
+        }
+
+        res.status(200).json(applications);
+    } catch (error) {
+        res.status(500).json({ error: "Server Error: Could not retrieve applications" });
+    }
 };
+
 
 //UPDTAE/PATCH volunteer application
 const updateApplicationStatus = async(req, res) => {
-    const { id } = req.params; 
+    const { applicationId } = req.params; 
     const { status } = req.body; 
 
     const validStatuses = ['Accepted', 'Rejected', 'Pending'];
@@ -383,7 +417,7 @@ const updateApplicationStatus = async(req, res) => {
 
     try {
         const updatedApplication = await Application.findByIdAndUpdate(
-            id, 
+            applicationId, 
             { status },
             { new: true } // This returns the updated document
         );
@@ -399,22 +433,58 @@ const updateApplicationStatus = async(req, res) => {
     }
 };
 
-//DELETE a volunteer application
-const deleteApplication = async(req, res) => {
-    const {id} = req.params;
-    try{
-        const removedApplication = await Application.findOneAndDelete({_id: id});
+//DELETE a volunteer application - REMOVED
+// const deleteApplication = async(req, res) => {
+//     const {id} = req.params;
+//     try{
+//         const removedApplication = await Application.findOneAndDelete({_id: id});
 
-        if(!removedApplication){
-            return res.status(404).json({error: "Volunteering Application not found"});
+//         if(!removedApplication){
+//             return res.status(404).json({error: "Volunteering Application not found"});
+//         }
+//         res.status(200).json(removedApplication);
+//     }catch(error){
+//         res.status(400).json({error: "Server Error: Could not delete application"});
+//     }
+// };
+
+//GET a volunteer profile using applicationId
+const getVolunteerProfile = async (req, res) => {
+    const { applicationId } = req.params;
+
+    try {
+        const application = await Application.findById(applicationId);
+        if (!application) {
+            return res.status(404).json({ error: "Application not found" });
         }
-        res.status(200).json(removedApplication);
-    }catch(error){
-        res.status(400).json({error: "Server Error: Could not delete application"});
+
+        // geting  volunteerId from application
+        const volunteerId = application.volunteerId;
+
+        // fidning volunteer profile by volunteerId
+        const volunteer = await Volunteer.findById(volunteerId);
+        if (!volunteer) {
+            return res.status(404).json({ error: "Volunteer not found" });
+        }
+
+        // finding volunteer details by volunteerId
+        const volunteerDetails = await VolunteerDetails.findOne({ volunteerId });
+        if (!volunteerDetails) {
+            return res.status(404).json({ error: "Volunteer details not found" });
+        }
+
+        // Combining volunteer basic info and volunteer details 
+        const volunteerProfile = {
+            ...volunteer._doc,
+            ...volunteerDetails._doc
+        };
+        res.status(200).json(volunteerProfile);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: "Server Error: Could not retrieve volunteer profile" });
     }
 };
 
-//GET a volunteer profile
 
 
 
@@ -426,12 +496,13 @@ module.exports = {
     updateOpportunity,
     getApplications,
     updateApplicationStatus,
-    deleteApplication,
+    //deleteApplication,
     getOrganization,
     createOrganization,
     updateOrganization,
     createRecruiter,
     updateRecruiter,
     saveIndependentRecruiterDetails,
-    getRecruiter
+    getRecruiter,
+    getVolunteerProfile
 };

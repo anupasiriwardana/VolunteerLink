@@ -26,12 +26,12 @@ export default function SignIn() {
       dispatch(signInStart());
       const res = await fetch('/api/login', {
         method: 'POST',
-        header: {'content-Type': 'application/json'},
+        headers: {'content-Type': 'application/json'},
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      if(data.success === false){
-        dispatch(signInFailure(data.message));
+      if(!res.ok){
+        dispatch(signInFailure(data.error));
       }
       if(res.ok){
         dispatch(signInSuccess(data));
@@ -66,13 +66,7 @@ export default function SignIn() {
               <TextInput type='password' placeholder='password' id='password' onChange={handleChange}/>
             </div>
             <Button className="bg-green-500 mt-5" type='submit' >
-              {  loading ? (
-                <>
-                  <Spinner size='sm'/>
-                  <span className='pl-3'>Loading...</span>
-                </>
-                ) : 'Sign In'
-              }
+              Signin
             </Button>
           </form>
           {

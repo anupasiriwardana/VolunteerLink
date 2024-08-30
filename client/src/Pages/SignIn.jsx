@@ -2,14 +2,14 @@ import {Link, useNavigate} from 'react-router-dom';
 import {Button, Label, TextInput, Alert, Spinner} from 'flowbite-react';
 import { useState } from 'react';
 import logo from '../assets/logo.png';
-import { useDispatch }  from 'react-redux';
-import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
+import { useDispatch, useSelector }  from 'react-redux';
+import { signInStart, signInSuccess, signInFailure } from '../Redux/user/userSlice';
 
-export default function SignUp() {
+export default function SignIn() {
 
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const { loading, error: errorMessage } = useSelector(state => state.user);
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -17,7 +17,29 @@ export default function SignUp() {
   }
 
   const handleSubmit = async (e) => {
-    return ('')
+    e.preventDefault();
+
+    if(!formData.email || !formData.password){
+      return dispatch(signInFailure('Please fill out all fields'));
+    }
+    try {
+      dispatch(signInStart());
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        header: {'content-Type': 'application/json'},
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if(data.success === false){
+        dispatch(signInFailure(data.message));
+      }
+      if(res.ok){
+        dispatch(signInSuccess(data));
+        navigate('/');
+      }
+    } catch (error) {
+      dispatch(signInFailure(error.message));
+    }
   }
 
   return (
@@ -44,9 +66,22 @@ export default function SignUp() {
               <TextInput type='password' placeholder='password' id='password' onChange={handleChange}/>
             </div>
             <Button className="bg-green-500 mt-5" type='submit' >
-              Sign In
+              {  loading ? (
+                <>
+                  <Spinner size='sm'/>
+                  <span className='pl-3'>Loading...</span>
+                </>
+                ) : 'Sign In'
+              }
             </Button>
           </form>
+          {
+            errorMessage && (
+              <Alert className='mt-5' color='failure'>
+                 {errorMessage}
+              </Alert>
+            )
+          }
         </div>
       </div>
     </div>

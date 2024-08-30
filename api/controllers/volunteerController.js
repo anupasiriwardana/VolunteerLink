@@ -9,12 +9,19 @@ const createVolunteer = async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
 
     try {
+        const existingVolunteer = await Volunteer.findOne({ email });
+        if (existingVolunteer) {
+            return res.status(400).json({ error: "Email is already in use" });
+        }
+
+        // Creating a new volunteer if the email is not in use
         const newVolunteer = await Volunteer.create({ firstName, lastName, email, password });
         res.status(201).json(newVolunteer);
     } catch (error) {
-        res.status(400).json({ error: "Server Error: Could not create volunteer" });
+        res.status(500).json({ error: "Server Error: Could not create volunteer" });
     }
 };
+
 
 //save - POST volunteer details
 const saveVolunteerDetails = async (req, res) => {

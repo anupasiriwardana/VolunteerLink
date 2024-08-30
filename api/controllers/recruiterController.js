@@ -6,17 +6,21 @@ const { Recruiter, IndependentRecruiter, OrganizationRepresenter } = require('..
 const { Volunteer, VolunteerDetails} = require('../models/volunteerUserModel');
 
 //POST / create recruiter-> recruiter signup
-const createRecruiter = async(req, res) => {
+const createRecruiter = async (req, res) => {
     const {
         firstName,
         lastName,
         email,
         organizationOrIndependent,
         password
-      } = req.body; 
-    
-    try{
-        //add doc to db
+    } = req.body;
+
+    try {
+        const existingRecruiter = await Recruiter.findOne({ email });
+        if (existingRecruiter) {
+            return res.status(400).json({ error: "Email is already in use" });
+        }
+
         const newRecruiter = await Recruiter.create({
             firstName,
             lastName,
@@ -24,11 +28,12 @@ const createRecruiter = async(req, res) => {
             organizationOrIndependent,
             password
         });
-        res.status(200).json(newRecruiter);
-    }catch(error){
-        res.status(400).json({error: "Server Error: Could not create recruiter"});
+        res.status(201).json(newRecruiter); // Changed status code to 201 for resource creation
+    } catch (error) {
+        res.status(500).json({ error: "Server Error: Could not create recruiter" });
     }
 };
+
 
 //POST personal details of independent recruiter
 const saveIndependentRecruiterDetails = async(req, res) => {

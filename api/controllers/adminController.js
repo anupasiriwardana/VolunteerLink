@@ -5,6 +5,34 @@ const Organization = require('../models/organizationModel');
 const { Recruiter, IndependentRecruiter, OrganizationRepresenter } = require('../models/recruiterUserModel');
 const { Volunteer, VolunteerDetails} = require('../models/volunteerUserModel');
 
+//POST / create recruiter-> recruiter signup
+const createAdmin = async (req, res) => {
+    const {
+        email,
+        password
+    } = req.body;
+
+    try {
+        //checking if the email is already used by anothr recruiter, volunter, or admin
+        const existingRecruiter = await Recruiter.findOne({ email });
+        const existingAdmin = await Admin.findOne({email});
+        const existingVolunteer = await Volunteer.findOne({email});
+
+        if (existingRecruiter || existingAdmin || existingVolunteer) {
+            return res.status(400).json({ error: "Email is already in use" });
+        }
+
+        const newAdmin = await Admin.create({
+            email,
+            password
+        });
+        res.status(201).json(newAdmin); 
+    } catch (error) {
+        res.status(500).json({ error: "Server Error: Could not create Admin" });
+    }
+};
+
+
 
 //GET profile of admin
 const getAdmin = async (req, res) => {
@@ -303,7 +331,8 @@ const deleteOpportunity = async(req, res) => {
 };
 
 
-module.exports = { 
+module.exports = {
+    createAdmin, 
     getAdmin,
     updateAdmin,
     createRecruiter,

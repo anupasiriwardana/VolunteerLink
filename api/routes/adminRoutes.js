@@ -3,6 +3,7 @@ const router = express.Router();
 
 //importinig controller funcs
 const {
+    createAdmin,
     getAdmin,
     updateAdmin,
     createRecruiter,
@@ -19,6 +20,9 @@ const {
     getOpportunity,
     deleteOpportunity
 } = require('../controllers/adminController');
+
+//create admin
+router.post('/profile',createAdmin);
 
 //GET profile of admin
 router.get('/profile/:adminId',getAdmin);

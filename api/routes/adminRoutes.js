@@ -21,7 +21,7 @@ const {
 } = require('../controllers/adminController');
 
 //GET profile of admin
-router.get('/profile',getAdmin);
+router.get('/profile/:adminId',getAdmin);
 
 //UPDATE profile details of admin
 router.patch('/profile/:adminId',updateAdmin);

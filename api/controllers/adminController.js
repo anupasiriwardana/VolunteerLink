@@ -196,7 +196,7 @@ const createVolunteer = async (req, res) => {
 //GET all users - volunteer
 const getVolunteers = async (req, res) => {
     try {
-        const volunteers = await Recruiter.find();
+        const volunteers = await Volunteer.find();
         if(!volunteers){
             return res.status(404).json({ error: "No volunteers found" });
         }

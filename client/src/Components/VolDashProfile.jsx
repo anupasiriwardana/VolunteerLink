@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom'
 //For delete user functionality
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 
-
 export default function DashProfile() {
 
     const [ showModal, setShowModal ] = useState(false);

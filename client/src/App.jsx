@@ -1,14 +1,14 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Header from './Components/Header'
 import Footer from './Components/Footer'
-import PrivateRoute from './Components/PrivateRoute'
+import VolPrivateRoute from './Components/VolPrivateRoute'
+import RecPrivateRoute from './Components/RecPrivateRoute'
 import Home from './Pages/Home'
 import SignIn from './Pages/SignIn'
 import VolSignUp from './Pages/VolSignUp'
 import RecSignUp from './Pages/RecSignUp'
 import VolDashboard from './Pages/VolDashboard'
 import RecDashboard from './Pages/RecDashboard'
-import RecDashCreateProject from './Components/RecDashCreateProject'
 
 export default function App() {
   return (
@@ -20,13 +20,12 @@ export default function App() {
         <Route path="/sign-in" element={<SignIn/>}/>
         <Route path="/vol-sign-up" element={<VolSignUp/>}/>
         <Route path="/rec-sign-up" element={<RecSignUp/>}/>
+        <Route element={<VolPrivateRoute/>} >
           <Route path="/vol-dashboard" element={<VolDashboard/>}/>
-          <Route path="/rec-dashboard" element={<RecDashboard/>}/>
-          <Route path="/rec-dashCreateProject" element={<RecDashCreateProject/>}/>
-        {/* dashboards should be be accessed through private route upon sign in, refer mern blog
-        <Route element={<PrivateRoute/>}>
         </Route>
-        */}
+        <Route element={<RecPrivateRoute/>} >
+          <Route path="/rec-dashboard" element={<RecDashboard/>}/>
+        </Route>
       </Routes>
       <Footer/>
     </BrowserRouter>

@@ -1,6 +1,6 @@
 import {Link, useNavigate} from 'react-router-dom';
 import {Button, Label, TextInput, Alert, Spinner} from 'flowbite-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import logo from '../assets/logo.png';
 import { useDispatch, useSelector }  from 'react-redux';
 import { signInStart, signInSuccess, signInFailure } from '../Redux/user/userSlice';
@@ -9,7 +9,7 @@ export default function SignIn() {
 
   const navigate = useNavigate();
   const [formData, setFormData] = useState({});
-  const { loading, error: errorMessage } = useSelector(state => state.user);
+  const { loading, error: errorMessage, currentUser } = useSelector(state => state.user);
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -26,7 +26,7 @@ export default function SignIn() {
       dispatch(signInStart());
       const res = await fetch('/api/login', {
         method: 'POST',
-        header: {'content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(formData),
       });
       const data = await res.json();
@@ -35,12 +35,30 @@ export default function SignIn() {
       }
       if(res.ok){
         dispatch(signInSuccess(data));
-        navigate('/');
       }
     } catch (error) {
       dispatch(signInFailure(error.message));
     }
   }
+
+  //after user successfully signs in, redirect to the relavant dashboard according to the user type.
+  useEffect(() => {
+    if (currentUser && currentUser.userType) {
+      switch (currentUser.userType) {
+        case 'volunteer':
+          navigate('/vol-dashboard');
+          break;
+        case 'organization-recruiter':
+          navigate('/recr-dashboard');
+          break;
+        case 'independent-recruiter':
+          navigate('/rec-dashboard');
+          break;
+        default:
+          navigate('/');
+      }
+    }
+  }, [currentUser, navigate]);
 
   return (
     <div className='min-h-screen mt-20 '>
@@ -66,12 +84,13 @@ export default function SignIn() {
               <TextInput type='password' placeholder='password' id='password' onChange={handleChange}/>
             </div>
             <Button className="bg-green-500 mt-5" type='submit' >
-              {  loading ? (
+              {
+                loading ? (
                 <>
-                  <Spinner size='sm'/>
-                  <span className='pl-3'>Loading...</span>
+                <Spinner size='sm'/>
+                <span className='pl-3'>Loading...</span>
                 </>
-                ) : 'Sign In'
+              ) : 'Sign In'
               }
             </Button>
           </form>
@@ -87,3 +106,4 @@ export default function SignIn() {
     </div>
   )
 }
+

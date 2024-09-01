@@ -347,7 +347,7 @@ const getOpportunity = async(req, res) => {
 
 //DELETE opportunity
 const deleteOpportunity = async(req, res) => {
-    const { opportunityId } = req.body;
+    const { opportunityId } = req.params;
     try{
         const removedOpportunity = await Opportunity.findOneAndDelete({_id: opportunityId});
         if(!removedOpportunity){

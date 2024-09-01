@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function AdminDashOpportunities() {
   const [opportunities, setOpportunities] = useState([]);
@@ -52,12 +53,9 @@ export default function AdminDashOpportunities() {
                 <td className="px-4 py-2">{opportunity.title}</td>
                 <td className="px-4 py-2">{opportunity.description.substring(0, 50)}...</td>
                 <td className="px-4 py-2">
-                  <a
-                    href={`/admin/opportunities/${opportunity._id}`}
-                    className="text-[#1aac83] hover:underline"
-                  >
+                  <Link to={`/admin?tab=projects&section=projectinfo&id=${opportunity._id}`} className="text-[#1aac83] hover:underline">
                     View Project
-                  </a>
+                  </Link>
                 </td>
               </tr>
             ))}

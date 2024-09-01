@@ -1,8 +1,11 @@
 import { Sidebar } from 'flowbite-react';
 import { useEffect, useState } from 'react';
-import { HiUser, HiArrowSmRight, HiDocumentText, HiFolderAdd, HiFolderOpen } from 'react-icons/hi';
+import { HiUser, HiArrowSmRight, HiFolderAdd } from 'react-icons/hi';
+import { PiPersonArmsSpreadFill } from "react-icons/pi";
+import { RiPhoneFindLine } from "react-icons/ri";
 import { Link, useLocation,useNavigate } from 'react-router-dom';
 import useSignOut from '../hooks/useSignOutHook';
+import logo from '../assets/logo.png';
 
 export default function DashSidebar() {
 
@@ -26,12 +29,20 @@ export default function DashSidebar() {
     };
     return (
         <Sidebar className='w-full md:w-56'>
+            <div>
+                <Link to="/" className="text-black text-3xl font-bold font-dmserif">
+                    <div className="flex items-center mt-4 mb-10">
+                        <img src={logo} alt="Logo" className="h-8 w-auto mr-2" />
+                        <p className="text-xl">VolunteerLink</p>
+                    </div>
+                </Link>
+            </div>
             <Sidebar.Items>
                 <Sidebar.ItemGroup className='flex flex-col gap-2'>
                     <Link to='/admin?tab=recruiters&section=recruiters'>
                         <Sidebar.Item 
                             active={tab === 'recruiters'} 
-                            icon={HiFolderAdd} 
+                            icon={RiPhoneFindLine} 
                             as='div' 
                             className={`${
                                 tab === 'recruiters' ? 'text-gray bg-gray-300' : ''
@@ -43,7 +54,7 @@ export default function DashSidebar() {
                     <Link to='/admin?tab=volunteers&section=volunteers'>
                         <Sidebar.Item 
                             active={tab === 'volunteers'} 
-                            icon={HiFolderOpen} 
+                            icon={PiPersonArmsSpreadFill} 
                             as='div' 
                             className={`${
                                 tab === 'volunteers' ? 'text-gray bg-gray-300' : ''
@@ -52,16 +63,16 @@ export default function DashSidebar() {
                             Volunteers
                         </Sidebar.Item>
                     </Link>
-                    <Link to='/admin?tab=projects'>
+                    <Link to='/admin?tab=projects&section=projects'>
                         <Sidebar.Item 
                             active={tab === 'projects'} 
-                            icon={HiDocumentText} 
+                            icon={HiFolderAdd} 
                             as='div' 
                             className={`${
                                 tab === 'projects' ? 'text-gray bg-gray-300' : ''
                             } rounded-md p-2 pl-4`}
                         >
-                            Projects
+                            Volunteer Projects
                         </Sidebar.Item>
                     </Link>
                     <Link to='/admin?tab=profile'>

@@ -163,10 +163,23 @@ const updateRecruiter = async (req, res) => {
     const { email, password } = req.body;
 
     try {
+        const updateFields = {}; //to store the fields and values to be updated
+        if(email){
+            //checking if the updated email is already used by anothr recruiter, volunter, or admin
+            const existingRecruiter = await Recruiter.findOne({ email });
+            const existingAdmin = await Admin.findOne({email});
+            const existingVolunteer = await Volunteer.findOne({email});
+            
+            if ((existingRecruiter && existingRecruiter._id != recruiterId) || existingAdmin || existingVolunteer) {
+                return res.status(400).json({ error: "Email is already in use" });
+            }
+            updateFields.email = email;
+        }
+        if(password) updateFields.password = password; //if passsword is present
+
         const updatedRecruiter = await Recruiter.findByIdAndUpdate(
             recruiterId,
-            {email},
-            {password},
+            updateFields,
             { new: true }
         );
         if (!updatedRecruiter) {
@@ -174,13 +187,14 @@ const updateRecruiter = async (req, res) => {
         }
         res.status(200).json(updatedRecruiter);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Server Error: Could not update recruiter profile" });
     }
 };
 
 //DELETE users - recruiter
 const deleteRecruiter = async (req, res) => {
-    const { recruiterId } = req.body;
+    const { recruiterId } = req.params;
 
     try {
         const deletedRecruiter = await Recruiter.findByIdAndDelete(recruiterId);
@@ -236,7 +250,7 @@ const getVolunteers = async (req, res) => {
 
 //GET a profile of a user - volunteer
 const getVolunteerDetails = async (req,res) => {
-    const volunteerId = req.params;
+    const {volunteerId} = req.params;
 
     try{
         const volunteer = await Volunteer.findById(volunteerId);
@@ -244,7 +258,7 @@ const getVolunteerDetails = async (req,res) => {
             return res.status(404).json({ error: "Volunteer not found" });
         }
         //geting volunter persnal details
-        const volunteerDetails = await VolunteerDetails.findOne(volunteer._id);
+        const volunteerDetails = await VolunteerDetails.findOne({volunteerId});
         if(!volunteerDetails){
             return res.status(404).json({error : "Volunteer details not found"});
         }
@@ -256,18 +270,33 @@ const getVolunteerDetails = async (req,res) => {
 
 //UPDATE users - volunteer
 const updateVolunteer = async (req, res) => {
-    const volunteerId = req.params;
+    const {volunteerId }= req.params;
     const { email, password } = req.body;
 
     try{
+        const updateFields = {}; //to store the fields and values to be updated
+        if(email){
+            //checking if the updated email is already used by anothr recruiter, volunter, or admin
+            const existingRecruiter = await Recruiter.findOne({ email });
+            const existingAdmin = await Admin.findOne({email});
+            const existingVolunteer = await Volunteer.findOne({email});
+            
+            if (existingRecruiter || existingAdmin || (existingVolunteer && existingVolunteer._id != volunteerId)) {
+                return res.status(400).json({ error: "Email is already in use" });
+            }
+            updateFields.email = email;
+        }
+        if(password) updateFields.password = password; //if passsword is present
+
         const updatedVolunteer = await Volunteer.findByIdAndUpdate(
             volunteerId,
-            {email}, {password},
+            updateFields,
             {new: true}
         );
         if(!updatedVolunteer){
             return res.status(404).json({error : "Volunteer not found"});
         }
+        res.status(200).json(updatedVolunteer);
     }catch(error){
         res.status(500).json({error : "Server Error: Could not update volunteer details"});
     }
@@ -275,7 +304,7 @@ const updateVolunteer = async (req, res) => {
 
 //DELETE users - volunteer
 const deleteVolunteer = async (req, res) => {
-    const volunteerId = req.body;
+    const {volunteerId} = req.params;
 
     try{
         const deletedVolunteer = await Volunteer.findByIdAndDelete(volunteerId);

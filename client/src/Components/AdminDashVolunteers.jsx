@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function AdminDashVolunteers() {
   const [volunteers, setVolunteers] = useState([]);
@@ -19,7 +20,7 @@ export default function AdminDashVolunteers() {
         const response = await fetch('/api/admin/users/volunteers');
         const data = await response.json();
         if (!response.ok) {
-          throw new Error(data.error);
+          setError(data.error);
         }
         setVolunteers(data);
       } catch (error) {
@@ -64,7 +65,16 @@ export default function AdminDashVolunteers() {
       });
     } catch (error) {
       setFormError(error.message);
+    } finally{
+      clearMessages();
     }
+  };
+
+  const clearMessages = () => {
+    setTimeout(() => {
+      setFormError(null);
+      setFormSuccess(null);
+    }, 3000);
   };
 
   if (loading) {
@@ -79,7 +89,8 @@ export default function AdminDashVolunteers() {
     <div className="p-4 md:p-6 flex flex-col md:flex-row">
       <div className="md:w-2/3 w-full">
         <h2 className="text-2xl font-bold mb-6 text-[#333333]">Volunteers</h2>
-        {volunteers.length > 0 ? (
+        
+        {volunteers && (
           <table className="w-full table-auto bg-white rounded-lg shadow-md">
             <thead>
               <tr className="bg-[#1aac83] text-white">
@@ -94,19 +105,14 @@ export default function AdminDashVolunteers() {
                   <td className="px-4 py-2">{volunteer.firstName} {volunteer.lastName}</td>
                   <td className="px-4 py-2">{volunteer.email}</td>
                   <td className="px-4 py-2">
-                    <a
-                      href={`/admin/volunteers/${volunteer._id}`}
-                      className="text-[#1aac83] hover:underline"
-                    >
-                      View Profile
-                    </a>
+                  <Link to={`/admin?tab=volunteers&section=volunteerprofile&id=${volunteer._id}`} className="text-[#1aac83] hover:underline">
+                    View Profile
+                  </Link>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        ) : (
-          <p className="text-center text-lg text-[#333333]">No volunteers found.</p>
         )}
       </div>
       <div className="md:w-1/3 w-full md:ml-6 mt-6 md:mt-0">

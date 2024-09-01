@@ -44,7 +44,7 @@ router.get('/users/recruiters/:recruiterId',getRecruiterDetails);
 router.patch('/users/recruiters/:recruiterId',updateRecruiter);
 
 //DELETE users - recruiter
-router.delete('/users/recruiters',deleteRecruiter);
+router.delete('/users/recruiters/:recruiterId',deleteRecruiter);
 
 
 //CREATE users - volunteer
@@ -60,7 +60,7 @@ router.get('/users/volunteers/:volunteerId',getVolunteerDetails);
 router.patch('/users/volunteers/:volunteerId',updateVolunteer);
 
 //DELETE users - volunteer
-router.delete('/users/volunteers',deleteVolunteer);
+router.delete('/users/volunteers/:volunteerId',deleteVolunteer);
 
 
 //GET all opportunities

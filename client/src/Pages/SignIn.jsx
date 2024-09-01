@@ -54,6 +54,9 @@ export default function SignIn() {
         case 'independent-recruiter':
           navigate('/rec-dashboard');
           break;
+        case 'admin' :
+          navigate('/admin');
+          break;
         default:
           navigate('/');
       }

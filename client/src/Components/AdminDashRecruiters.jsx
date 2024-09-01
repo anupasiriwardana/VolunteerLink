@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function AdminDashRecruiters() {
   const [recruiters, setRecruiters] = useState([]);
@@ -68,9 +69,17 @@ export default function AdminDashRecruiters() {
       });
     } catch (error) {
       setFormError(error.message);
+    } finally{
+      clearMessages();
     }
   };
 
+  const clearMessages = () => {
+    setTimeout(() => {
+      setFormError(null);
+      setFormSuccess(null);
+    }, 3000);
+  };
   if (loading) {
     return <p className="text-center text-lg text-[#1aac83]">Loading...</p>;
   }
@@ -100,12 +109,9 @@ export default function AdminDashRecruiters() {
                   <td className="px-4 py-2">{recruiter.email}</td>
                   <td className="px-4 py-2">{recruiter.organizationOrIndependent}</td>
                   <td className="px-4 py-2">
-                    <a
-                      href={`/admin/recruiters/${recruiter._id}`}
-                      className="text-[#1aac83] hover:underline"
-                    >
+                    <Link to={`/admin?tab=recruiters&section=recruiterprofile&id=${recruiter._id}`} className="text-[#1aac83] hover:underline">
                       View Profile
-                    </a>
+                    </Link>
                   </td>
                 </tr>
               ))}

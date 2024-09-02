@@ -25,7 +25,7 @@ function AppContent() {
 
   // List of private routes
   const privateRoutes = [
-    '/vol-dashboard',
+    '/volunteer',
     '/rec-dashboard',
     '/admin',
   ];
@@ -43,7 +43,7 @@ function AppContent() {
         <Route path="/vol-sign-up" element={<VolSignUp />} />
         <Route path="/rec-sign-up" element={<RecSignUp />} />
         <Route element={<VolPrivateRoute />} >
-          <Route path="/vol-dashboard" element={<VolDashboard />} />
+          <Route path="/volunteer" element={<VolDashboard />} />
         </Route>
         <Route element={<RecPrivateRoute />} >
           <Route path="/rec-dashboard" element={<RecDashboard />} />

@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function VolDashProjects() {
+export default function VolDashOpportunities() {
   return (
     <div>VolDashProjects</div>
   )

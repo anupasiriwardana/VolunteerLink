@@ -1,42 +1,90 @@
-import { Sidebar } from 'flowbite-react'
+import { Sidebar } from 'flowbite-react';
 import { useEffect, useState } from 'react';
-import { HiUser, HiArrowSmRight, HiFolder } from 'react-icons/hi'
-import { Link, useLocation } from 'react-router-dom';
+import { HiUser, HiArrowSmRight, HiFolderAdd } from 'react-icons/hi';
+import { PiPersonArmsSpreadFill } from "react-icons/pi";
+import { RiPhoneFindLine } from "react-icons/ri";
+import { Link, useLocation,useNavigate } from 'react-router-dom';
+import useSignOut from '../hooks/useSignOutHook';
+import logo from '../assets/logo.png';
 
 export default function DashSidebar() {
 
-    const location = useLocation(); //initialize useLocation
+    const location = useLocation(); // Initialize useLocation
+    const navigate = useNavigate();
+    const signOut = useSignOut();
     const [tab, setTab] = useState('');
     
-    //evach time we come to this page, we get irs tab⬇️
-    useEffect( ()=> {
-      const urlParams = new URLSearchParams(location.search); //URLSearchParams returns parameters
+    // Each time we come to this page, we get its tab
+    useEffect(() => {
+      const urlParams = new URLSearchParams(location.search); // URLSearchParams returns parameters
       const tabFromUrl = urlParams.get('tab');
-      if(tabFromUrl){ //if the tab from the url is not null, do⬇️
-        setTab(tabFromUrl)
+      if (tabFromUrl) { // If the tab from the URL is not null, do
+        setTab(tabFromUrl);
       }
-    }, [location.search]) //this useEffect renders every time location.search updates  
+    }, [location.search]); // This useEffect renders every time location.search updates  
 
-  return (
-    <Sidebar className='w-full md:w-56 '>
-        <Sidebar.Items >
-            <Sidebar.ItemGroup className='flex flex-col gap-1 bg-slate-300 p-3 '>
-                <Link to='/vol-dashboard?tab=profile'>  {/* when profile is clicked, navigate to profile tab */}
-                {/* active only when in the profile tab ⬇️ */}
-                <Sidebar.Item active={ tab === 'profile'} icon={HiUser} as='div' className='mt-3'>
-                    Profile
-                </Sidebar.Item>
+    const handleSignOut = () => {
+        signOut(); // calling custom hook to clear local storage and update redux state
+        navigate('/sign-in'); 
+    };
+    return (
+        <Sidebar className='w-full md:w-56'>
+            <div>
+                <Link to="/" className="text-black text-3xl font-bold font-dmserif">
+                    <div className="flex items-center mt-4 mb-10">
+                        <img src={logo} alt="Logo" className="h-8 w-auto mr-2" />
+                        <p className="text-xl">VolunteerLink</p>
+                    </div>
                 </Link>
-                <Link to='/vol-dashboard?tab=projects'>
-                <Sidebar.Item active={ tab === 'projects'} icon={HiFolder} as='div'>
-                    My Projects
-                </Sidebar.Item>
-                </Link>
-                <Sidebar.Item icon={HiArrowSmRight} className='cursor-pointer'>
-                    Sign Out
-                </Sidebar.Item>
-            </Sidebar.ItemGroup>
-        </Sidebar.Items>
-    </Sidebar>
-  )
+            </div>
+            <Sidebar.Items>
+                <Sidebar.ItemGroup className='flex flex-col gap-2'>
+                    <Link to='/volunteer?tab=opportunities&section=opportunities'>
+                        <Sidebar.Item 
+                            active={tab === 'opportunities'} 
+                            icon={RiPhoneFindLine} 
+                            as='div' 
+                            className={`${
+                                tab === 'opportunities' ? 'text-gray bg-gray-300' : ''
+                            } rounded-md p-2 pl-4 `}
+                        >
+                            Find Opportunities
+                        </Sidebar.Item>
+                    </Link>
+                    <Link to='/volunteer?tab=appliedprojects&section=projects'>
+                        <Sidebar.Item 
+                            active={tab === 'projects'} 
+                            icon={HiFolderAdd} 
+                            as='div' 
+                            className={`${
+                                tab === 'appliedprojects' ? 'text-gray bg-gray-300' : ''
+                            } rounded-md p-2 pl-4`}
+                        >
+                            Applied Projects
+                        </Sidebar.Item>
+                    </Link>
+                    <Link to='/volunteer?tab=profile'>
+                        <Sidebar.Item 
+                            active={tab === 'profile'} 
+                            icon={HiUser} 
+                            as='div' 
+                            className={`mt-3 ${
+                                tab === 'profile' ? 'text-gray bg-gray-300' : ''
+                            } rounded-md p-2 pl-4`}
+                        >
+                            Profile
+                        </Sidebar.Item>
+                    </Link>
+                    <button 
+                        className='m-7 text-white bg-[#1aac83] hover:bg-[#148b6a] rounded-md p-2 flex items-center justify-center'
+                        onClick={handleSignOut} 
+                    >
+                        <HiArrowSmRight className='mr-2' />
+                        Sign Out
+                    </button>
+                </Sidebar.ItemGroup>
+            </Sidebar.Items>
+        </Sidebar>
+    )
 }
+

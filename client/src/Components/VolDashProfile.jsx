@@ -38,44 +38,42 @@ export default function VolunteerProfile() {
   const { currentUser } = useSelector(state => state.user);
 
   useEffect(() => {
-    if (currentUser) {
-      const fetchVolunteerData = async () => {
-        try {
-          const response = await fetch(`/api/volunteer/profile/${currentUser.user._id}`);
-          const data = await response.json();
-          if (!response.ok) {
-            throw new Error(data.error);
-          }
-          setVolunteerData({ 
-            firstName: data.volunteer.firstName,
-            lastName: data.volunteer.lastName,
-            email: data.volunteer.email, 
-            password: '', 
-            confirmPassword: '' 
-          });
-          if(data.volunteerDetails){
-            setVolunteerDetailsPresent(true);
-            setVolunteerDetails({
-              phoneNo: data.volunteerDetails.phoneNo,
-              nic: data.volunteerDetails.nic,
-              city: data.volunteerDetails.city,
-              country: data.volunteerDetails.country,
-              address: data.volunteerDetails.address,
-              dob: data.volunteerDetails.dob,
-              gender: data.volunteerDetails.gender,
-              bio: data.volunteerDetails.bio,
-              skills: data.volunteerDetails.skills
-            });
-          }
-        } catch (error) {
-          setError(data.error || "Error: Could not retrieve volunteer profile.");
-          clearMessages();
-        } finally {
-          setLoading(false);
+    const fetchVolunteerData = async () => {
+      try {
+        const response = await fetch(`/api/volunteer/profile/${currentUser.user._id}`);
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error);
         }
-      };
-      fetchVolunteerData();
-    }
+        setVolunteerData({ 
+          firstName: data.volunteer.firstName,
+          lastName: data.volunteer.lastName,
+          email: data.volunteer.email, 
+          password: '', 
+          confirmPassword: '' 
+        });
+        if(data.volunteerDetails){
+          setVolunteerDetailsPresent(true);
+          setVolunteerDetails({
+            phoneNo: data.volunteerDetails.phoneNo,
+            nic: data.volunteerDetails.nic,
+            city: data.volunteerDetails.city,
+            country: data.volunteerDetails.country,
+            address: data.volunteerDetails.address,
+            dob: data.volunteerDetails.dob,
+            gender: data.volunteerDetails.gender,
+            bio: data.volunteerDetails.bio,
+            skills: data.volunteerDetails.skills
+          });
+        }
+      } catch (error) {
+        setError(data.error || "Error: Could not retrieve volunteer profile.");
+        clearMessages();
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchVolunteerData();
   }, [form1Success]);
 
   const handleVolunteerChange = (e) => {

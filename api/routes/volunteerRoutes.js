@@ -11,7 +11,8 @@ const {
     createApplication,
     getAllApplications,
     updateApplication,
-    deleteApplication
+    deleteApplication,
+    getOpportunity
 } = require('../controllers/volunteerController');
 
 
@@ -30,6 +31,9 @@ router.patch('/profile/:volunteerId',updateVolunteerDetails);
 
 //GET all opportunities
 router.get('/opportunities',getAllOpportunities);
+
+//GET a single opportunity
+router.get('/opportunities/:opportunityId',getOpportunity);
 
 
 //POST application

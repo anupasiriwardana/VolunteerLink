@@ -6,6 +6,7 @@ import VolDashSidebar from '../Components/VolDashSidebar';
 import VolDashProfile from '../Components/VolDashProfile';
 import VolDashOpportunities from '../Components/VolDashOpportunities';
 import VolDashMyProjects from '../Components/VolDashMyProjects'
+import VoldDashOpportInfo from '../Components/VolDashOpportInfo';
 
 export default function Dashboard() {
 
@@ -39,7 +40,7 @@ export default function Dashboard() {
       { tab === 'profile' && <VolDashProfile/>} 
 
       {tab === 'opportunities' && urlSection == 'opportunities' && <VolDashOpportunities/>}
-      {/* {tab === 'opportunities' && urlSection == 'details' && <RecruiterProfile/>} */}
+      {tab === 'opportunities' && urlSection == 'details' && <VoldDashOpportInfo/>}
 
       {tab === 'appliedprojects' && urlSection == 'projects' && <VolDashMyProjects/>}
       {/* {tab === 'appliedprojects' && urlSection == 'myapplication' && <RecruiterProfile/>} */}

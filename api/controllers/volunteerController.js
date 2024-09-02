@@ -120,6 +120,19 @@ const getAllOpportunities = async (req, res) => {
     }
 };
 
+//GET a single opportunity
+const getOpportunity = async(req, res) => {
+    const { opportunityId } = req.params;
+    try{
+        const opportunity = await Opportunity.findById({_id : opportunityId});
+        if(!opportunity) {
+            return res.status(404).json({error: "Volunteering Opportunity not found"});
+        }
+        res.status(200).json(opportunity);
+    }catch(error){
+        res.status(500).json({error: "Server Error: Could not retrieve opportunity"});
+    }
+};
 
 //POST application
 const createApplication = async (req, res) => {
@@ -130,7 +143,7 @@ const createApplication = async (req, res) => {
         // Checking if volunteer has already applied for same opportunity
         const existingApplication = await Application.findOne({ volunteerId, opportunityId });
         if (existingApplication) {
-            return res.status(400).json({ error: "You have already applied for this opportunity" });
+            return res.status(400).json({ error: "You already have applied for this opportunity" });
         }
         
         const newApplication = await Application.create({
@@ -141,6 +154,7 @@ const createApplication = async (req, res) => {
         });
         res.status(201).json(newApplication);
     } catch (error) {
+        console.error(error)
         res.status(500).json({ error: "Server Error: Could not submit application" });
     }
 };
@@ -226,5 +240,6 @@ module.exports = {
     createApplication,
     getAllApplications,
     updateApplication,
-    deleteApplication
+    deleteApplication,
+    getOpportunity
 };

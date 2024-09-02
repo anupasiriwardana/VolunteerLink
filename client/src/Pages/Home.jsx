@@ -1,6 +1,7 @@
 import React from 'react';
 import home_1 from '../assets/home_1.jpg';
 import home_2 from '../assets/home_2.jpg';
+import {Link} from 'react-router-dom';
 
 
 export default function Home() {
@@ -37,25 +38,33 @@ export default function Home() {
               Develop new skills and gain valuable experience.
             </div>
 
-            <div className="h-6 border-l border-gray-300 mx-4"></div>
+            <br/>
+
+            {/* <div className="h-6 border-l border-gray-300 mx-4"></div> */}
 
             <div className=' bg-green-200 p-4'>
               Build a strong network with like-minded individuals.
             </div>
 
-            <div className="h-6 border-l border-gray-300 mx-4"></div>
+            <br/>
+
+            {/* <div className="h-6 border-l border-gray-300 mx-4"></div> */}
 
             <div className=' bg-green-200 p-4'>
               Contribute to meaningful causes and make a real impact.
             </div>
 
-            <div className="h-6 border-l border-gray-300 mx-4"></div>
+            <br/>
+
+            {/* <div className="h-6 border-l border-gray-300 mx-4"></div> */}
 
             <div className=' bg-green-200 p-4'>
               Experience personal growth and a sense of fulfillment.
             </div>
 
-            <button className='bg-customGreen hover:bg-green-700 p-3 rounded-md'>
+            <br/>
+
+            <button className='bg-green-600 hover:bg-green-700 p-3 rounded-md font-bold text-xl text-white'>
               Get started as a volunteer
             </button>
           </div>
@@ -97,26 +106,34 @@ export default function Home() {
               Develop new skills and gain valuable experience.
             </div>
 
-            <div className="h-6 border-l border-gray-300 mx-4"></div>
+            <br/>
+
+            {/* <div className="h-6 border-l border-gray-300 mx-4"></div> */}
 
             <div className=' bg-green-200 p-4'>
               Build a strong network with like-minded individuals.
             </div>
 
-            <div className="h-6 border-l border-gray-300 mx-4"></div>
+            <br/>
+
+            {/* <div className="h-6 border-l border-gray-300 mx-4"></div> */}
 
             <div className=' bg-green-200 p-4'>
               Contribute to meaningful causes and make a real impact.
             </div>
 
-            <div className="h-6 border-l border-gray-300 mx-4"></div>
+            <br/>
+
+            {/* <div className="h-6 border-l border-gray-300 mx-4"></div> */}
 
             <div className=' bg-green-200 p-4'>
               Experience personal growth and a sense of fulfillment.
             </div>
 
-            <button className='bg-customGreen hover:bg-green-700 p-3 rounded-md'>
-              Get started as a volunteer
+            <br/>
+
+            <button className='bg-green-600 hover:bg-green-700 p-3 rounded-md font-bold text-xl text-white'>
+              Get started as a recruiter
             </button>
           </div>
 

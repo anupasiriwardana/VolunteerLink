@@ -17,16 +17,16 @@ export default function App() {
       <Routes>
         {/* all the pages within the website are implemented below */}
         <Route path="/" element={<Home/>}/>
-        <Route path="/about"  element = {<About/>}/>
-        <Route path="/sign-in" element={<SignIn/>}/>
-        <Route path="/sign-up" element={<SignUp/>}/>
-        <Route path='/find-oppotunities'  element={<FindOppotunities/>}/>
-        <Route path='/recruit-volunteers' element={<RecruitVolunteers/>}/>
+        <Route path="/about"  element = {<About/>}/> 
+        <Route path="/sign-in" element={<SignIn/>}/> 
+        <Route path="/sign-up" element={<SignUp/>}/> 
+        <Route path='/find-oppotunities'  element={<FindOppotunities/>}/> 
+        <Route path='/recruit-volunteers' element={<RecruitVolunteers/>}/> 
         <Route element={PrivateRoute}>
           <Route path="/dashboard" element={<Dashboard/>}/>
         </Route>
       </Routes>
       <Footer/>
-    </BrowserRouter>
+    </BrowserRouter> 
   )
 }

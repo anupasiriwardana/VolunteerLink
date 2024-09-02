@@ -37,31 +37,21 @@ export default function Home() {
             <div className=' bg-green-200 p-4'>
               Develop new skills and gain valuable experience.
             </div>
-
             <br/>
-
-            {/* <div className="h-6 border-l border-gray-300 mx-4"></div> */}
 
             <div className=' bg-green-200 p-4'>
               Build a strong network with like-minded individuals.
             </div>
-
             <br/>
-
-            {/* <div className="h-6 border-l border-gray-300 mx-4"></div> */}
 
             <div className=' bg-green-200 p-4'>
               Contribute to meaningful causes and make a real impact.
             </div>
-
             <br/>
-
-            {/* <div className="h-6 border-l border-gray-300 mx-4"></div> */}
 
             <div className=' bg-green-200 p-4'>
               Experience personal growth and a sense of fulfillment.
             </div>
-
             <br/>
 
             <button className='bg-green-600 hover:bg-green-700 p-3 rounded-md font-bold text-xl text-white'>
@@ -105,31 +95,21 @@ export default function Home() {
             <div className=' bg-green-200 p-4'>
               Develop new skills and gain valuable experience.
             </div>
-
             <br/>
-
-            {/* <div className="h-6 border-l border-gray-300 mx-4"></div> */}
 
             <div className=' bg-green-200 p-4'>
               Build a strong network with like-minded individuals.
             </div>
-
             <br/>
-
-            {/* <div className="h-6 border-l border-gray-300 mx-4"></div> */}
 
             <div className=' bg-green-200 p-4'>
               Contribute to meaningful causes and make a real impact.
             </div>
-
             <br/>
-
-            {/* <div className="h-6 border-l border-gray-300 mx-4"></div> */}
 
             <div className=' bg-green-200 p-4'>
               Experience personal growth and a sense of fulfillment.
             </div>
-
             <br/>
 
             <button className='bg-green-600 hover:bg-green-700 p-3 rounded-md font-bold text-xl text-white'>

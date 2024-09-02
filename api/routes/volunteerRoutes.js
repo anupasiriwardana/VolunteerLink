@@ -12,7 +12,8 @@ const {
     getAllApplications,
     updateApplication,
     deleteApplication,
-    getOpportunity
+    getOpportunity,
+    getApplication
 } = require('../controllers/volunteerController');
 
 
@@ -23,7 +24,7 @@ router.post('/signup',createVolunteer);
 router.post('/profile/:volunteerId',saveVolunteerDetails);
 
 //GET volunteer details
-router.get('/profile',getVolunteerDetails);
+router.get('/profile/:volunteerId',getVolunteerDetails);
 
 //PATCH volunteer details
 router.patch('/profile/:volunteerId',updateVolunteerDetails);
@@ -40,7 +41,9 @@ router.get('/opportunities/:opportunityId',getOpportunity);
 router.post('/opportunities/:opportunityId',createApplication);
 
 //GET all applications
-router.get('/applications',getAllApplications);
+router.get('/applications/:volunteerId',getAllApplications);
+
+router.get('/applicationinfo/:applicationId',getApplication)
 
 //PATCH application
 router.patch('/applications/:applicationId',updateApplication);

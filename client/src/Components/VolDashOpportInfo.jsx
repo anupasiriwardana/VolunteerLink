@@ -36,7 +36,7 @@ export default function OpportunityProfile() {
           }
         }
       } catch (error) {
-        setError('Error: Could not fetch opportunity data');
+        setError(data.error || 'Error: Could not fetch opportunity data');
       } finally {
         setLoading(false);
       }
@@ -68,7 +68,7 @@ export default function OpportunityProfile() {
   }, []);
 
   const handleGoBack = () => {
-    navigate('/volunteer?tab=opportunities&section=opportunities');
+    navigate(-1);
   };
 
   const clearMessages = () => {

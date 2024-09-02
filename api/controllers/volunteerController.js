@@ -56,15 +56,15 @@ const saveVolunteerDetails = async (req, res) => {
 
 //GET volunteer details
 const getVolunteerDetails = async (req, res) => {
-    const { volunteerId } = req.body; 
+    const { volunteerId } = req.params; 
 
     try {
         const volunteer = await Volunteer.findById(volunteerId);
         const volunteerDetails = await VolunteerDetails.findOne({ volunteerId });
 
-        if (!volunteer || !volunteerDetails) {
-            return res.status(404).json({ error: "Volunteer or volunteer details not found" });
-        }
+        // if (!volunteer || !volunteerDetails) {
+        //     return res.status(404).json({ error: "Volunteer or volunteer details not found" });
+        // }
         res.status(200).json({volunteer,volunteerDetails});
     } catch (error) {
         res.status(500).json({ error: "Server Error: Could not retrieve volunteer details" });
@@ -85,18 +85,13 @@ const updateVolunteerDetails = async (req, res) => {
             { ...updateFields }, 
             { new: true }
         );
-        if (!updatedVolunteer) {
-            return res.status(404).json({ error: "Volunteer not found" });
-        }
+
 
         const updatedVolunteerDetails = await VolunteerDetails.findOneAndUpdate(
             { volunteerId },
             { ...updateFields },  
             { new: true }
         );
-        if (!updatedVolunteerDetails) {
-            return res.status(404).json({ error: "Volunteer details not found" });
-        }
 
         return res.status(200).json({ updatedVolunteer, updatedVolunteerDetails });
     } catch (error) {
@@ -163,7 +158,7 @@ const createApplication = async (req, res) => {
 //GET all applications 
 //here we hv to update when an opportunity is deleted -> application should return as an error msg
 const getAllApplications = async (req, res) => {
-    const { volunteerId } = req.body; 
+    const { volunteerId } = req.params; 
 
     try {
         const applications = await Application.find({ volunteerId });
@@ -174,6 +169,20 @@ const getAllApplications = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ error: "Server Error: Could not retrieve applications" });
+    }
+};
+
+const getApplication = async(req,res) => {
+    const { applicationId } = req.params;
+    try{
+        const application = await Application.findById(applicationId);
+        if(!application){
+            return res.status(404).json({ error: "Application not found" });
+        }
+        res.status(200).json(application);
+    }catch(error){
+        console.error(error);
+        res.status(500).json({ error: "Server Error: Could not retrieve application" });
     }
 };
 
@@ -218,9 +227,9 @@ const deleteApplication = async (req, res) => {
         }
 
         // Checking if the application status is accepted or rejected
-        if (existingApplication.status === 'Accepted' || existingApplication.status === 'Rejected') {
-            return res.status(400).json({ error: "Cannot delete application that has been accepted or rejected" });
-        }
+        // if (existingApplication.status === 'Accepted' || existingApplication.status === 'Rejected') {
+        //     return res.status(400).json({ error: "Cannot delete application that has been accepted or rejected" });
+        // }
 
         // deleting application
         const deletedApplication = await Application.findByIdAndDelete(applicationId);
@@ -241,5 +250,6 @@ module.exports = {
     getAllApplications,
     updateApplication,
     deleteApplication,
-    getOpportunity
+    getOpportunity,
+    getApplication
 };

@@ -5,8 +5,9 @@ import { useState, useEffect } from 'react'
 import VolDashSidebar from '../Components/VolDashSidebar';
 import VolDashProfile from '../Components/VolDashProfile';
 import VolDashOpportunities from '../Components/VolDashOpportunities';
-import VolDashMyProjects from '../Components/VolDashMyProjects'
+import VolDashAppliedProjects from '../Components/VolDashAppliedProjects'
 import VoldDashOpportInfo from '../Components/VolDashOpportInfo';
+import VolDashApplication from '../Components/VolDashApplicatioin';
 
 export default function Dashboard() {
 
@@ -42,8 +43,9 @@ export default function Dashboard() {
       {tab === 'opportunities' && urlSection == 'opportunities' && <VolDashOpportunities/>}
       {tab === 'opportunities' && urlSection == 'details' && <VoldDashOpportInfo/>}
 
-      {tab === 'appliedprojects' && urlSection == 'projects' && <VolDashMyProjects/>}
-      {/* {tab === 'appliedprojects' && urlSection == 'myapplication' && <RecruiterProfile/>} */}
+      {tab === 'appliedprojects' && urlSection == 'projects' && <VolDashAppliedProjects/>}
+      {tab === 'appliedprojects' && urlSection == 'projectinfo' && <VoldDashOpportInfo/>}
+      {tab === 'appliedprojects' && urlSection == 'myapplication' && <VolDashApplication/>}
     </div>
   )
 }

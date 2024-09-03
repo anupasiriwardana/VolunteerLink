@@ -52,21 +52,48 @@ const getAdmin = async (req, res) => {
 //UPDATE profile details of admin
 const updateAdmin = async (req, res) => {
     const { adminId } = req.params;
+    const { email, password } = req.body;
 
     try {
+        // checking if the email is already used by another admin, volunteer, or recruiter
+        if (email) {
+            const existingVolunteer = await Volunteer.findOne({ email });
+            const existingRecruiter = await Recruiter.findOne({ email });
+            const existingAdmin = await Admin.findOne({ email });
+
+            if (
+                (existingAdmin && existingAdmin._id.toString() !== adminId) || 
+                existingVolunteer || 
+                existingRecruiter
+            ) {
+                return res.status(400).json({ error: "Email is already in use" });
+            }
+        }
+
+        const updateFields = {};
+        if (email) {
+            updateFields.email = email;
+        }
+        if (password) {
+            updateFields.password = password; 
+        }
+
         const updatedAdmin = await Admin.findByIdAndUpdate(
             adminId,
-            { ...req.body },
+            updateFields,
             { new: true }
         );
+
         if (!updatedAdmin) {
             return res.status(404).json({ error: "Admin not found" });
         }
+
         res.status(200).json(updatedAdmin);
     } catch (error) {
         res.status(500).json({ error: "Server Error: Could not update admin profile" });
     }
 };
+
 
 
 //CREATE users - recruiter

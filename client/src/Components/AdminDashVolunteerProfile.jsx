@@ -30,7 +30,7 @@ export default function VolunteerProfile() {
         setEmail(data.volunteer.email);
       } catch (error) {
         setError(data.error || 'Error : could not fetch volunteer data ');
-      }finally{
+      } finally {
         setLoading(false);
       }
     };
@@ -38,8 +38,8 @@ export default function VolunteerProfile() {
     fetchVolunteerData();
   }, [formSuccess]);
 
-  const handleDelete = async() => {
-    try{
+  const handleDelete = async () => {
+    try {
       const response = await fetch(`/api/admin/users/volunteers/${volunteerId}`, {
         method: 'DELETE',
         headers: {
@@ -49,36 +49,46 @@ export default function VolunteerProfile() {
       const data = await response.json();
       if (!response.ok) {
         setDeleteStatus(data.error || 'Error : Could not delete Volunteer profile');
-      }else{
+      } else {
         navigate("/admin?tab=volunteers&section=volunteers");
       }
-    }catch(error){
+    } catch (error) {
       setDeleteStatus('Error : Could not complete delete request');
-    }finally {
+    } finally {
       clearMessages();
     }
   };
 
-  const handleUpdate = async(e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
-    if(email && !password){
+    if (email && !password) {
       setFormError("Error: A new password is required.");
       clearMessages();
       return;
     }
-    try{
+    if(!email && !password){
+      setFormError("Error: Email and password are required.");
+      clearMessages();
+      return;
+    }
+    if(!email && password){
+      setFormError("Error: Email field is required");
+      clearMessages();
+      return;
+    }
+    try {
       const response = await fetch(`/api/admin/users/volunteers/${volunteerId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({email, password}),
+        body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
       if (!response.ok) {
         setFormError(data.error);
         setPassword('');
-      }else{
+      } else {
         setEmail(email);
         setPassword('');
         setFormSuccess('Volunteer Profile updated successfully!');
@@ -105,24 +115,26 @@ export default function VolunteerProfile() {
   if (error) {
     return <div>
       <div className="text-red-500">{error}</div>
-      <div class="flex justify-start">
-        <button
-          onClick={handleDelete}
-          className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
-        >
-          Delete Volunteer
-        </button>
-        {deleteStatus && (<div className="text-red-500">{deleteStatus}</div>)}
+      <div className='flex justify-between'>
+        <div class="flex justify-start">
+          <button
+            onClick={handleDelete}
+            className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+          >
+            Delete Volunteer
+          </button>
+          {deleteStatus && (<div className="text-red-500">{deleteStatus}</div>)}
         </div>
         <div class="flex justify-end">
           <button
             onClick={handleGoBack}
             className="mr-10 px-4 text-[#1aac83] hover:text-green-700 font-semibold"
           >
-          &larr; Go Back
-        </button>
+            &larr; Go Back
+          </button>
         </div>
-      </div>;
+      </div>
+    </div>;
   }
 
   if (loading) {
@@ -158,22 +170,24 @@ export default function VolunteerProfile() {
             </ul>
           </div>
         )}
-        <div class="flex justify-start">
-        <button
-          onClick={handleDelete}
-          className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
-        >
-          Delete Volunteer
-        </button>
-        {deleteStatus && (<div className="text-red-500">{deleteStatus}</div>)}
-        </div>
-        <div class="flex justify-end">
-          <button
-            onClick={handleGoBack}
-            className="mr-10 px-4 text-[#1aac83] hover:text-green-700 font-semibold"
-          >
-          &larr; Go Back
-        </button>
+        <div className='flex justify-between'>
+          <div class="flex justify-start">
+            <button
+              onClick={handleDelete}
+              className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+            >
+              Delete Volunteer
+            </button>
+            {deleteStatus && (<div className="text-red-500">{deleteStatus}</div>)}
+          </div>
+          <div class="flex justify-end">
+            <button
+              onClick={handleGoBack}
+              className="mr-10 px-4 text-[#1aac83] hover:text-green-700 font-semibold"
+            >
+              &larr; Go Back
+            </button>
+          </div>
         </div>
       </div>
 
@@ -208,6 +222,6 @@ export default function VolunteerProfile() {
         {formError && <p className="text-red-500 text-center mt-4">{formError}</p>}
         {formSuccess && <p className="text-green-500 text-center mt-4">{formSuccess}</p>}
       </div>
-    </div>  
+    </div>
   );
 }

@@ -1,6 +1,6 @@
 
 Color palette:
-        green -> #laac83 -> customGreen in tailwind.config.js
+        green -> #1aac83 -> customGreen in tailwind.config.js
         gray  -> # f1f1f1
         black -> #333333
 

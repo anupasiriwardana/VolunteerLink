@@ -46,7 +46,7 @@ export default function SignIn() {
     if (currentUser && currentUser.userType) {
       switch (currentUser.userType) {
         case 'volunteer':
-          navigate('/vol-dashboard');
+          navigate('/volunteer');
           break;
         case 'organization-recruiter':
           navigate('/recr-dashboard');

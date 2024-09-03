@@ -53,6 +53,16 @@ export default function DashProfile() {
       clearMessages();
       return;
     }
+    if(!adminData.email && !adminData.password){
+      setError("Error: Email and password is required.");
+      clearMessages();
+      return;
+    }
+    if(!adminData.email && adminData.password){
+      setError("Error: Email is required.");
+      clearMessages();
+      return;
+    }
     try {
       const response = await fetch(`/api/admin/profile/${currentUser.user._id}`, {
         method: 'PATCH',
@@ -64,11 +74,12 @@ export default function DashProfile() {
       const data = await response.json();
       if (!response.ok) {
         setError(data.error);
+      }else{
+        setAdminData({ ...adminData, password: '', confirmPassword: '' });
+        setFormSuccess('Profile updated successfully!');
       }
-      setAdminData({ ...adminData, password: '', confirmPassword: '' });
-      setFormSuccess('Profile updated successfully!');
     } catch (error) {
-      setError("Error: Could not update admin profile.");
+      setError(data.error || "Error: Could not update admin profile.");
     } finally {
       clearMessages();
     }

@@ -90,7 +90,7 @@ const updateVolunteerDetails = async (req, res) => {
                 return res.status(400).json({ error: "Email is already in use" });
             }
 
-            updateFields.email = email; // Include email in update fields if all checks pass
+            updateFields.email = email; //inclusing email in upate fields
         }
 
         const updatedVolunteer = await Volunteer.findByIdAndUpdate(

@@ -1,3 +1,4 @@
+import { set } from 'mongoose';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -73,6 +74,16 @@ export default function RecruiterProfile() {
       clearMessages();
       return;
     }
+    if(!email && !password){
+      setFormError("Error: Email and password are required.");
+      clearMessages();
+      return;
+    }
+    if(!email && password){
+      setFormError("Error: Email field is required");
+      clearMessages();
+      return;
+    }
     try {
       const response = await fetch(`/api/admin/users/recruiters/${recruiterId}`, {
         method: 'PATCH',
@@ -111,7 +122,7 @@ export default function RecruiterProfile() {
 
   if (error) {
     return (
-      <div>
+      <div flex justify-between>
         <div className="text-red-500">{error}</div>
         <div className="flex justify-start">
           <button
@@ -175,6 +186,7 @@ export default function RecruiterProfile() {
             <p><strong>Website:</strong> {additionalDetails.organization.website}</p>
           </div>
         )}
+        <div className='flex justify-between'>
         <div className="flex justify-start">
           <button
             onClick={handleDelete}
@@ -191,6 +203,7 @@ export default function RecruiterProfile() {
           >
             &larr; Go Back
           </button>
+        </div>
         </div>
       </div>
 

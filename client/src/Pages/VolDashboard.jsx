@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux';
+import React from 'react';
 
 //importinng components
 import VolDashSidebar from '../Components/VolDashSidebar';
@@ -23,6 +24,9 @@ export default function Dashboard() {
 
   //evach time we come to this page, we get irs tab⬇️
   useEffect(() => {
+    if (!currentUser) {
+      return;//if no current user no need to fetch or redirect
+    }
     const urlParams = new URLSearchParams(location.search); //URLSearchParams returns parameters
     const tabFromUrl = urlParams.get('tab');
     const sectionFromUrl = urlParams.get('section');
@@ -43,11 +47,11 @@ export default function Dashboard() {
         } else {
           if (data.volunteerDetails) {
             setVolunteerDetailsPresent(true);
-            if(!tabFromUrl){
+            if(location.pathname == "/volunteer" && !location.search){ //ensuring no query parameters
               //when url is just /volunteer -> redirect to opportunities tab ->why just /volunteer -> see signin.jsx-> that's how we hv set up after signin
               navigate('/volunteer?tab=opportunities&section=opportunities');
             }
-          }else{
+          }else{//volunteer details are not present-> so we gotta get them 1st
             navigate('/volunteer?tab=volunteerinfo');
           }
         }
@@ -56,7 +60,7 @@ export default function Dashboard() {
       }
     };
     fetchVolunteerData();
-  }, [location.search, volunteerDetailsPresent,tab, navigate, currentUser.user._id]) //this useEffect renders every time location.search updates
+  }, [location.search, volunteerDetailsPresent,tab, navigate, currentUser]) //this useEffect renders every time location.search updates
 
   return (
     <div className='min-h-screen flex flex-col md:flex-row'>

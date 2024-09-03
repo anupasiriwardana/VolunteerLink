@@ -77,24 +77,37 @@ const updateVolunteerDetails = async (req, res) => {
     const { volunteerId } = req.params;
 
     try {
-        // excluding volunteerId from request body if there's one
-        const { volunteerId: _omit, ...updateFields } = req.body;
+        // remivg volunteerId from request body if present, and extraxting email
+        const { volunteerId: _omit, email, ...updateFields } = req.body;
+
+        if (email) {
+            // checking if the email is already used by another recruiter volunteer admin
+            const existingVolunteer = await Volunteer.findOne({ email });
+            const existingRecruiter = await Recruiter.findOne({ email });
+            const existingAdmin = await Admin.findOne({ email });
+
+            if (existingRecruiter || existingAdmin || (existingVolunteer && existingVolunteer._id.toString() !== volunteerId)) {
+                return res.status(400).json({ error: "Email is already in use" });
+            }
+
+            updateFields.email = email; // Include email in update fields if all checks pass
+        }
 
         const updatedVolunteer = await Volunteer.findByIdAndUpdate(
             volunteerId,
-            { ...updateFields }, 
+            { ...updateFields },
             { new: true }
         );
 
-
         const updatedVolunteerDetails = await VolunteerDetails.findOneAndUpdate(
             { volunteerId },
-            { ...updateFields },  
+            { ...updateFields },
             { new: true }
         );
 
         return res.status(200).json({ updatedVolunteer, updatedVolunteerDetails });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Server Error: Could not update volunteer details" });
     }
 };

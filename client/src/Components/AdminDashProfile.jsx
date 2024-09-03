@@ -79,7 +79,7 @@ export default function DashProfile() {
         setFormSuccess('Profile updated successfully!');
       }
     } catch (error) {
-      setError(data.error || "Error: Could not update admin profile.");
+      setError(data.error || "Error: Could not update request");
     } finally {
       clearMessages();
     }

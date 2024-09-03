@@ -5,6 +5,34 @@ const Organization = require('../models/organizationModel');
 const { Recruiter, IndependentRecruiter, OrganizationRepresenter } = require('../models/recruiterUserModel');
 const { Volunteer, VolunteerDetails} = require('../models/volunteerUserModel');
 
+//POST / create recruiter-> recruiter signup
+const createAdmin = async (req, res) => {
+    const {
+        email,
+        password
+    } = req.body;
+
+    try {
+        //checking if the email is already used by anothr recruiter, volunter, or admin
+        const existingRecruiter = await Recruiter.findOne({ email });
+        const existingAdmin = await Admin.findOne({email});
+        const existingVolunteer = await Volunteer.findOne({email});
+
+        if (existingRecruiter || existingAdmin || existingVolunteer) {
+            return res.status(400).json({ error: "Email is already in use" });
+        }
+
+        const newAdmin = await Admin.create({
+            email,
+            password
+        });
+        res.status(201).json(newAdmin); 
+    } catch (error) {
+        res.status(500).json({ error: "Server Error: Could not create Admin" });
+    }
+};
+
+
 
 //GET profile of admin
 const getAdmin = async (req, res) => {
@@ -24,21 +52,48 @@ const getAdmin = async (req, res) => {
 //UPDATE profile details of admin
 const updateAdmin = async (req, res) => {
     const { adminId } = req.params;
+    const { email, password } = req.body;
 
     try {
+        // checking if the email is already used by another admin, volunteer, or recruiter
+        if (email) {
+            const existingVolunteer = await Volunteer.findOne({ email });
+            const existingRecruiter = await Recruiter.findOne({ email });
+            const existingAdmin = await Admin.findOne({ email });
+
+            if (
+                (existingAdmin && existingAdmin._id.toString() !== adminId) || 
+                existingVolunteer || 
+                existingRecruiter
+            ) {
+                return res.status(400).json({ error: "Email is already in use" });
+            }
+        }
+
+        const updateFields = {};
+        if (email) {
+            updateFields.email = email;
+        }
+        if (password) {
+            updateFields.password = password; 
+        }
+
         const updatedAdmin = await Admin.findByIdAndUpdate(
             adminId,
-            { ...req.body },
+            updateFields,
             { new: true }
         );
+
         if (!updatedAdmin) {
             return res.status(404).json({ error: "Admin not found" });
         }
+
         res.status(200).json(updatedAdmin);
     } catch (error) {
         res.status(500).json({ error: "Server Error: Could not update admin profile" });
     }
 };
+
 
 
 //CREATE users - recruiter
@@ -135,10 +190,23 @@ const updateRecruiter = async (req, res) => {
     const { email, password } = req.body;
 
     try {
+        const updateFields = {}; //to store the fields and values to be updated
+        if(email){
+            //checking if the updated email is already used by anothr recruiter, volunter, or admin
+            const existingRecruiter = await Recruiter.findOne({ email });
+            const existingAdmin = await Admin.findOne({email});
+            const existingVolunteer = await Volunteer.findOne({email});
+            
+            if ((existingRecruiter && existingRecruiter._id != recruiterId) || existingAdmin || existingVolunteer) {
+                return res.status(400).json({ error: "Email is already in use" });
+            }
+            updateFields.email = email;
+        }
+        if(password) updateFields.password = password; //if passsword is present
+
         const updatedRecruiter = await Recruiter.findByIdAndUpdate(
             recruiterId,
-            {email},
-            {password},
+            updateFields,
             { new: true }
         );
         if (!updatedRecruiter) {
@@ -146,13 +214,14 @@ const updateRecruiter = async (req, res) => {
         }
         res.status(200).json(updatedRecruiter);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Server Error: Could not update recruiter profile" });
     }
 };
 
 //DELETE users - recruiter
 const deleteRecruiter = async (req, res) => {
-    const { recruiterId } = req.body;
+    const { recruiterId } = req.params;
 
     try {
         const deletedRecruiter = await Recruiter.findByIdAndDelete(recruiterId);
@@ -196,7 +265,7 @@ const createVolunteer = async (req, res) => {
 //GET all users - volunteer
 const getVolunteers = async (req, res) => {
     try {
-        const volunteers = await Recruiter.find();
+        const volunteers = await Volunteer.find();
         if(!volunteers){
             return res.status(404).json({ error: "No volunteers found" });
         }
@@ -208,7 +277,7 @@ const getVolunteers = async (req, res) => {
 
 //GET a profile of a user - volunteer
 const getVolunteerDetails = async (req,res) => {
-    const volunteerId = req.params;
+    const {volunteerId} = req.params;
 
     try{
         const volunteer = await Volunteer.findById(volunteerId);
@@ -216,7 +285,7 @@ const getVolunteerDetails = async (req,res) => {
             return res.status(404).json({ error: "Volunteer not found" });
         }
         //geting volunter persnal details
-        const volunteerDetails = await VolunteerDetails.findOne(volunteer._id);
+        const volunteerDetails = await VolunteerDetails.findOne({volunteerId});
         if(!volunteerDetails){
             return res.status(404).json({error : "Volunteer details not found"});
         }
@@ -228,18 +297,33 @@ const getVolunteerDetails = async (req,res) => {
 
 //UPDATE users - volunteer
 const updateVolunteer = async (req, res) => {
-    const volunteerId = req.params;
+    const {volunteerId }= req.params;
     const { email, password } = req.body;
 
     try{
+        const updateFields = {}; //to store the fields and values to be updated
+        if(email){
+            //checking if the updated email is already used by anothr recruiter, volunter, or admin
+            const existingRecruiter = await Recruiter.findOne({ email });
+            const existingAdmin = await Admin.findOne({email});
+            const existingVolunteer = await Volunteer.findOne({email});
+            
+            if (existingRecruiter || existingAdmin || (existingVolunteer && existingVolunteer._id != volunteerId)) {
+                return res.status(400).json({ error: "Email is already in use" });
+            }
+            updateFields.email = email;
+        }
+        if(password) updateFields.password = password; //if passsword is present
+
         const updatedVolunteer = await Volunteer.findByIdAndUpdate(
             volunteerId,
-            {email}, {password},
+            updateFields,
             {new: true}
         );
         if(!updatedVolunteer){
             return res.status(404).json({error : "Volunteer not found"});
         }
+        res.status(200).json(updatedVolunteer);
     }catch(error){
         res.status(500).json({error : "Server Error: Could not update volunteer details"});
     }
@@ -247,7 +331,7 @@ const updateVolunteer = async (req, res) => {
 
 //DELETE users - volunteer
 const deleteVolunteer = async (req, res) => {
-    const volunteerId = req.body;
+    const {volunteerId} = req.params;
 
     try{
         const deletedVolunteer = await Volunteer.findByIdAndDelete(volunteerId);
@@ -290,7 +374,7 @@ const getOpportunity = async(req, res) => {
 
 //DELETE opportunity
 const deleteOpportunity = async(req, res) => {
-    const { opportunityId } = req.body;
+    const { opportunityId } = req.params;
     try{
         const removedOpportunity = await Opportunity.findOneAndDelete({_id: opportunityId});
         if(!removedOpportunity){
@@ -303,7 +387,8 @@ const deleteOpportunity = async(req, res) => {
 };
 
 
-module.exports = { 
+module.exports = {
+    createAdmin, 
     getAdmin,
     updateAdmin,
     createRecruiter,

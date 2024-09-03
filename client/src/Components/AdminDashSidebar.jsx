@@ -39,31 +39,43 @@ export default function DashSidebar() {
             </div>
             <Sidebar.Items>
                 <Sidebar.ItemGroup className='flex flex-col gap-2'>
-                    <Link to='/volunteer?tab=opportunities&section=opportunities'>
+                    <Link to='/admin?tab=recruiters&section=recruiters'>
                         <Sidebar.Item 
-                            active={tab === 'opportunities'} 
+                            active={tab === 'recruiters'} 
                             icon={RiPhoneFindLine} 
                             as='div' 
                             className={`${
-                                tab === 'opportunities' ? 'text-gray bg-gray-300' : ''
+                                tab === 'recruiters' ? 'text-gray bg-gray-300' : ''
                             } rounded-md p-2 pl-4 `}
                         >
-                            Find Opportunities
+                            Recruiters
                         </Sidebar.Item>
                     </Link>
-                    <Link to='/volunteer?tab=appliedprojects&section=projects'>
+                    <Link to='/admin?tab=volunteers&section=volunteers'>
+                        <Sidebar.Item 
+                            active={tab === 'volunteers'} 
+                            icon={PiPersonArmsSpreadFill} 
+                            as='div' 
+                            className={`${
+                                tab === 'volunteers' ? 'text-gray bg-gray-300' : ''
+                            } rounded-md p-2 pl-4`}
+                        >
+                            Volunteers
+                        </Sidebar.Item>
+                    </Link>
+                    <Link to='/admin?tab=projects&section=projects'>
                         <Sidebar.Item 
                             active={tab === 'projects'} 
                             icon={HiFolderAdd} 
                             as='div' 
                             className={`${
-                                tab === 'appliedprojects' ? 'text-gray bg-gray-300' : ''
+                                tab === 'projects' ? 'text-gray bg-gray-300' : ''
                             } rounded-md p-2 pl-4`}
                         >
-                            Applied Projects
+                            Volunteer Projects
                         </Sidebar.Item>
                     </Link>
-                    <Link to='/volunteer?tab=profile'>
+                    <Link to='/admin?tab=profile'>
                         <Sidebar.Item 
                             active={tab === 'profile'} 
                             icon={HiUser} 

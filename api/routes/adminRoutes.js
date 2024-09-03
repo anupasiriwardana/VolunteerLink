@@ -3,6 +3,7 @@ const router = express.Router();
 
 //importinig controller funcs
 const {
+    createAdmin,
     getAdmin,
     updateAdmin,
     createRecruiter,
@@ -20,8 +21,11 @@ const {
     deleteOpportunity
 } = require('../controllers/adminController');
 
+//create admin
+router.post('/profile',createAdmin);
+
 //GET profile of admin
-router.get('/profile',getAdmin);
+router.get('/profile/:adminId',getAdmin);
 
 //UPDATE profile details of admin
 router.patch('/profile/:adminId',updateAdmin);
@@ -56,7 +60,7 @@ router.get('/users/volunteers/:volunteerId',getVolunteerDetails);
 router.patch('/users/volunteers/:volunteerId',updateVolunteer);
 
 //DELETE users - volunteer
-router.delete('/users/volunteers',deleteVolunteer);
+router.delete('/users/volunteers/:volunteerId',deleteVolunteer);
 
 
 //GET all opportunities

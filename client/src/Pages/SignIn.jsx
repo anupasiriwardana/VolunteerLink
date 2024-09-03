@@ -30,8 +30,8 @@ export default function SignIn() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      if(data.success === false){
-        dispatch(signInFailure(data.message));
+      if(!res.ok){
+        dispatch(signInFailure(data.error));
       }
       if(res.ok){
         dispatch(signInSuccess(data));
@@ -46,13 +46,16 @@ export default function SignIn() {
     if (currentUser && currentUser.userType) {
       switch (currentUser.userType) {
         case 'volunteer':
-          navigate('/vol-dashboard');
+          navigate('/volunteer');
           break;
         case 'organization-recruiter':
           navigate('/rec-dashboard');
           break;
         case 'independent-recruiter':
           navigate('/rec-dashboard');
+          break;
+        case 'admin' :
+          navigate('/admin');
           break;
         default:
           navigate('/');

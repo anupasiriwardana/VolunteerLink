@@ -36,7 +36,6 @@ export default function RecDashOrgRecProfile() {
         return;
       }
       try {
-        dispatch(updateStart());
         console.log(currentUser.user._id);
         console.log(profileForm)
         const res = await fetch(`/api/recruiter/profile/${currentUser.user._id}`, {

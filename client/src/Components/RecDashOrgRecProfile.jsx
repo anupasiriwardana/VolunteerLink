@@ -19,6 +19,7 @@ export default function RecDashOrgRecProfile() {
     const [ activityError, setactivityError ] = useState(null);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [orgDetailsPresent, setOrgDetailsPresent] = useState(false);
 
     const handleProfileChange = (e) => {
       setProfileForm({...profileForm, [e.target.id]: e.target.value});
@@ -54,6 +55,8 @@ export default function RecDashOrgRecProfile() {
         }
       } catch (error) {
         setactivityError(error.message);
+      }finally {
+        clearMessages();
       }
     }
 
@@ -64,6 +67,9 @@ export default function RecDashOrgRecProfile() {
           const data = await res.json()
           if(res.ok){
             setOrganizationDetails(data);
+            setOrgDetailsPresent(true);
+          }else{
+            setOrgDetailsPresent(false);
           }
         } catch (error) {
           console.log(error.message);
@@ -72,7 +78,7 @@ export default function RecDashOrgRecProfile() {
       if(currentUser.user.organizationOrIndependent === 'Organization-representer'){
         fetchOrganization(); //Since async can't directly be used for useEffect(), we define a createPosts() function and call it inside the useEffect()
       }
-    }, [currentUser]);
+    }, [currentUser, activitySuccess]);
 
     const handleCreateOrg = async (e) => {
       e.preventDefault();
@@ -97,6 +103,8 @@ export default function RecDashOrgRecProfile() {
         }
       } catch (error) {
         setactivityError(error);
+      }finally{
+        clearMessages();
       }
     }
 
@@ -122,6 +130,8 @@ export default function RecDashOrgRecProfile() {
         }
       } catch (error) {
         setactivityError(error);
+      }finally{
+        clearMessages();
       }
     }
 
@@ -144,7 +154,7 @@ export default function RecDashOrgRecProfile() {
         }
       } catch (error) {
         setactivityError(error);
-      }
+      } 
     }
 
     const handleRecruiterSignout = async (e) => {
@@ -155,11 +165,18 @@ export default function RecDashOrgRecProfile() {
       setActivitySuccess('Signed out successfully');
     }
 
+    const clearMessages = () => {
+      setTimeout(() => {
+        setactivityError(null);
+        setActivitySuccess(null);
+      },3000)
+    }
+
     return (
     <div className='min-w-80vw mx-auto p-3 '>
         <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
         <form className='flex flex-col' >
-          <div className=' flex flex-col md:flex-row gap-5'>
+          <div className=' flex flex-col md:flex-row gap-5 h-min'>
             <div className='flex flex-col gap-5 border border-gray-500 rounded-2xl p-4'>
               <div className='sm:flex justify-between mb-5 gap-5'>
                 <div>
@@ -205,11 +222,29 @@ export default function RecDashOrgRecProfile() {
                 </div>
               </div>
               <div className='mb-5'>
-                <Label value='Organization Description' />
-                <Textarea id='description' defaultValue={organizationDetails.description} onChange={handleOrgChange}/>
+                  <Label value='Email'/>
+                  <TextInput type='text' id='email' defaultValue={organizationDetails.email} onChange={handleOrgChange}/>
               </div>
-              {organizationDetails && (<Button type='submit' className='bg-green-500 mt-5 block mx-auto' onClick={handleUpdateOrg}>Update organization</Button>)}
-              {!organizationDetails && (<Button type='submit' className='bg-green-500 mt-5 block mx-auto' onClick={handleCreateOrg}>Create organization</Button>)}
+              <div className='sm:flex justify-between gap-5 '>
+                <div className='mb-5'>
+                  <Label value='City'/>
+                  <TextInput type='text' id='city' defaultValue={organizationDetails.city} onChange={handleOrgChange}/>
+                </div>
+                <div>
+                  <Label value='Country'/>
+                  <TextInput type='text' id='country' defaultValue={organizationDetails.country} onChange={handleOrgChange}/>
+                </div>
+              </div>
+              <div className='mb-5'>
+                  <Label value='Address'/>
+                  <TextInput type='text' id='address' defaultValue={organizationDetails.address} onChange={handleOrgChange}/>
+              </div>
+              <div className='mb-5'>
+                <Label value='Organization Description' />
+                <Textarea id='description' rows={4} defaultValue={organizationDetails.description} onChange={handleOrgChange}/>
+              </div>
+              {orgDetailsPresent && (<Button type='submit' className='bg-green-500 mt-5 block mx-auto' onClick={handleUpdateOrg}>Update organization</Button>)}
+              {!orgDetailsPresent && (<Button type='submit' className='bg-green-500 mt-5 block mx-auto' onClick={handleCreateOrg}>Create organization</Button>)}
             </div>  
           </div>     
         </form>

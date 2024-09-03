@@ -46,12 +46,12 @@ export default function DashSidebar() {
                     Create Project
                 </Sidebar.Item>
                 </Link>
-                <Link to='/rec-dashboard?tab=view-projects'>
+                <Link to='/rec-dashboard?tab=view-projects&section=projects'>
                 <Sidebar.Item active={ tab === 'view-projects'} icon={HiFolderOpen} as='div'>
                     View Projects
                 </Sidebar.Item>
                 </Link>
-                <Link to='/rec-dashboard?tab=applications'>
+                <Link to='/rec-dashboard?tab=applications&section=applications'>
                 <Sidebar.Item active={ tab === 'applications'} icon={HiDocumentText} as='div'>
                     View Applications
                 </Sidebar.Item>

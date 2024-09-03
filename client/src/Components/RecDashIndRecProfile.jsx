@@ -83,7 +83,7 @@ export default function RecDashIndRecProfile() {
         if(!res.ok){
           setactivityError('Error when saving independent recruiter details')
         }else{
-          setActivitySuccess("Profile Updated successfully");
+          setActivitySuccess("Details Saved successfully");
         }
       } catch (error) {
         setactivityError(error.message);
@@ -153,17 +153,29 @@ export default function RecDashIndRecProfile() {
             </div>
             <div className='sm:flex justify-between mb-5'>
               <div>
-                <Label value='Contact'/>
-                <TextInput type='text' id='contact' defaultValue={fetchedDetails.phoneNo} onChange={handleIndependantChange}/>
+                <Label value='City'/>
+                <TextInput type='text' id='city' defaultValue={fetchedDetails.city} onChange={handleIndependantChange}/>
               </div>
               <div>
                 <Label value='Country'/>
                 <TextInput type='text' id='country' defaultValue={fetchedDetails.country} onChange={handleIndependantChange}/>
               </div>
             </div>
+            <div>
+                <Label value='Address'/>
+                <Textarea id='address' defaultValue={fetchedDetails.address} onChange={handleIndependantChange}/>
+              </div>
+            <div>
+                <Label value='Contact'/>
+                <TextInput type='text' id='phoneNo' defaultValue={fetchedDetails.phoneNo} onChange={handleIndependantChange}/>
+              </div>
+              <div>
+                <Label value='NIC'/>
+                <TextInput type='text' id='nicNo' defaultValue={fetchedDetails.nicNo} onChange={handleIndependantChange}/>
+              </div>
             <div className='mb-5'>
-              <Label value='Skills & Experience'/>
-              <Textarea id='bio' defaultValue={fetchedDetails.bio} onChange={handleIndependantChange}/>
+              <Label value='Bio'/>
+              <Textarea id='bio' defaultValue={fetchedDetails.bio} onChange={handleIndependantChange} placeholder='Tell us About your self!'/>
             </div>
             <div className='mb-5'>
               <Label value='LinkedIn Profile'/>
@@ -172,6 +184,10 @@ export default function RecDashIndRecProfile() {
             <div className='mb-5'>
               <Label value='Personal Website'/>
               <TextInput type='text' id='website' defaultValue={fetchedDetails.website} onChange={handleIndependantChange}/>
+            </div>
+            <div className='mb-5'>
+              <Label value='Services'/>
+              <Textarea id='services' defaultValue={fetchedDetails.services} onChange={handleIndependantChange} placeholder='Tell us About your past Volunteering Projects!'/>
             </div>
             <div className='mb-5'>
               <Label value='Email'/>

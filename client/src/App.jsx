@@ -1,35 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import Header from './Components/Header';
+import Footer from './Components/Footer';
+import VolPrivateRoute from './Components/VolPrivateRoute';
+import RecPrivateRoute from './Components/RecPrivateRoute';
+import AdminPrivateRoute from './Components/AdminPrivateRoute';
+import Home from './Pages/Home';
+import SignIn from './Pages/SignIn';
+import VolSignUp from './Pages/VolSignUp';
+import RecSignUp from './Pages/RecSignUp';
+import VolDashboard from './Pages/VolDashboard';
+import RecDashboard from './Pages/RecDashboard';
+import AdminDashboard from './Pages/AdminDashboard';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  );
+}
+
+function AppContent() {
+  const location = useLocation();
+
+  // List of private routes
+  const privateRoutes = [
+    '/vol-dashboard',
+    '/rec-dashboard',
+    '/admin',
+  ];
+
+  // Check if the current route is a private route
+  const isPrivateRoute = privateRoutes.some(route => location.pathname.startsWith(route));
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      {!isPrivateRoute && <Header />} {/* Render Header only if it's not a private route */}
+      <Routes>
+        {/* all the pages within the website are implemented below */}
+        <Route path="/" element={<Home />} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/vol-sign-up" element={<VolSignUp />} />
+        <Route path="/rec-sign-up" element={<RecSignUp />} />
+        <Route element={<VolPrivateRoute />} >
+          <Route path="/vol-dashboard" element={<VolDashboard />} />
+        </Route>
+        <Route element={<RecPrivateRoute />} >
+          <Route path="/rec-dashboard" element={<RecDashboard />} />
+        </Route>
+        <Route element={<AdminPrivateRoute />} >
+          <Route path="/admin" element={<AdminDashboard />} />
+        </Route>
+      </Routes>
+      <Footer />
     </>
-  )
+  );
 }
-
-export default App

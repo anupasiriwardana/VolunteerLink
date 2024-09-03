@@ -8,6 +8,7 @@ import { useSelector }  from 'react-redux';
 export default function RecCreateProject() {
 
   const [ formData, setFormData] = useState({});
+  console.log(formData)
   const [ publishError, setPublishError] = useState(null);
   const [ publish, setPublish ] = useState(false);
   const { currentUser } = useSelector(state => state.user);
@@ -39,7 +40,7 @@ export default function RecCreateProject() {
   return (
     <div className='p-3 mx-auto min-h-screen'>
       <h1 className='text-center text-3xl mb-7 font-semibold'>Create Project</h1>
-      <form className='flex flex-col gap-4 w-800' onSubmit={handleSubmit}>
+      <form className='flex flex-col gap-4 border border-gray-500 rounded-2xl p-4 'onSubmit={handleSubmit}>
         <div className='flex flex-col gap-4 sm:flex-row justify-between'>
           <TextInput type='text' placeholder='Title' required id='title' className='flex-1' onChange={(e) => setFormData({...formData, title: e.target.value})} />
           <Select onChange={(e)=> setFormData({...formData, categories: e.target.value})}>
@@ -77,7 +78,10 @@ export default function RecCreateProject() {
           <TextInput type='date' title='Application Deadline' id='applicationDeadline' onChange={(date) => setFormData({...formData, applicationDeadline: new Date(date.target.value)})}/>
         </div>
         <span className='mt-3'>Enter project description below:</span>
-        <ReactQuill theme='snow' placeholder='write something...' className='h-72 mb-12' required onChange={ (value)=> setFormData({...formData, description: value})}/>
+        
+        <ReactQuill theme='snow' placeholder='write something...' className='h-72 mb-12' required 
+          onChange={ (value)=>  { const cleanValue = value.replace(/<\/?p>/g, ''); setFormData({...formData, description: cleanValue}) } }/>
+        
         <Button type='submit' gradientDuoTone='greenToBlue'>Post</Button>
         { publishError && <Alert color='failure' className='mt-5'>{publishError}</Alert>}
         { publish && <Alert color='success' className='mt-5'>Opportunity created successfully</Alert>}

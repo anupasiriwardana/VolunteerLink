@@ -49,7 +49,7 @@ export default function SignIn() {
           navigate('/vol-dashboard');
           break;
         case 'organization-recruiter':
-          navigate('/recr-dashboard');
+          navigate('/rec-dashboard');
           break;
         case 'independent-recruiter':
           navigate('/rec-dashboard');

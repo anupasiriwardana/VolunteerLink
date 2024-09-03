@@ -40,7 +40,7 @@ router.get('/users/recruiters/:recruiterId',getRecruiterDetails);
 router.patch('/users/recruiters/:recruiterId',updateRecruiter);
 
 //DELETE users - recruiter
-router.delete('/users/recruiters',deleteRecruiter);
+router.delete('/users/recruiters/:recruiterId',deleteRecruiter);
 
 
 //CREATE users - volunteer

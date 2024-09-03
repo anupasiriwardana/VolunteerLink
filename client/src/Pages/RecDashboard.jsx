@@ -1,15 +1,18 @@
 import { useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import RecDashSidebar from '../Components/RecDashSidebar';
-import RecDashProfile from '../Components/RecDashProfile';
+import RecDashIndRecProfile from '../Components/RecDashIndRecProfile';
+import RecDashOrgRecProfile from '../Components/RecDashOrgRecProfile';
 import RecDashViewProject from '../Components/RecDashViewProject';
 import RecDashCreateProject from '../Components/RecDashCreateProject';
 import RecDashApplications from '../Components/RecDashApplications';
+import { useSelector } from 'react-redux';
 
 export default function Dashboard() {
 
   const location = useLocation(); //initialize useLocation
   const [tab, setTab] = useState('');
+  const { currentUser } = useSelector(state => state.user);
   
   //evach time we come to this page, we get irs tab⬇️
   useEffect( ()=> {
@@ -27,7 +30,8 @@ export default function Dashboard() {
         <RecDashSidebar/>
       </div>
       {/* profile... */}
-      {tab === 'profile' && <RecDashProfile/>} {/* DashProfile is only visible when we're in the profile tab */}
+      { tab === 'ind-rec-profile' && <RecDashIndRecProfile/>} {/* DashProfile is only visible when we're in the profile tab */}
+      { tab === 'org-rec-profile' && <RecDashOrgRecProfile/>} {/* DashProfile is only visible when we're in the profile tab */}
       { tab === 'view-projects' && <RecDashViewProject/> } {/* DashPosts is only visible when we're in the posts tab */}
       { tab === 'create-projects' && <RecDashCreateProject/> } {/* DashPosts is only visible when we're in the posts tab */}
       { tab === 'applications' && <RecDashApplications/> } {/* DashPosts is only visible when we're in the posts tab */}

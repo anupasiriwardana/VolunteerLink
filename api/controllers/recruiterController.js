@@ -39,35 +39,50 @@ const createRecruiter = async (req, res) => {
     }
 };
 
+//DELETE recruiter
+const deleteRecruiter = async (req, res) => {
+    const recruiterId = req.params.id;
+
+    try {
+        const deletedRecruiter = await Recruiter.findByIdAndDelete(recruiterId);
+        if (!deletedRecruiter) {
+            return res.status(404).json({ error: "Recruiter not found" });
+        }
+        res.status(200).json(deletedRecruiter);
+    } catch (error) {
+        res.status(500).json({ error: "Server Error: Could not delete recruiter" });
+    }
+};
 
 //POST personal details of independent recruiter
 const saveIndependentRecruiterDetails = async(req, res) => {
     const { id } = req.params;  
+    console.log(id)
     const {
-        nicNo,
+        // nicNo,
         phoneNo,
         country,
-        city,
-        address,
+        // city,
+        // address,
         linkedInProfile,
         website,
         bio,
-        services
+        // services
     } = req.body;
 
     try {
         // Add doc to db
         const newIndependentRecruiterDetails = await IndependentRecruiter.create({
             recruiterId: id,  // Using recruiter ID from params
-            nicNo,
-            phoneNo,
-            country,
-            city,
-            address,
-            linkedInProfile,
-            website,
-            bio,
-            services
+            // nicNo,
+            phoneNo: req.body.contact,
+            country: req.body.country,
+            // city,
+            // address,
+            linkedInProfile: req.body.linkedInProfile,
+            website: req.body.website,
+            bio: req.body.bio,
+            // services
         });
         res.status(200).json(newIndependentRecruiterDetails);
     } catch (error) {
@@ -77,26 +92,37 @@ const saveIndependentRecruiterDetails = async(req, res) => {
 
 //GET profile details of  recruiter - independent or organization representer
 const getRecruiter = async (req, res) => {
-    const { recruiterId } = req.body;
+    const recruiterId  = req.params.id;
 
     try {
         const recruiterDetails = await Recruiter.findById(recruiterId);
+        const recruiterObj = recruiterDetails.toObject()
 
         if (!recruiterDetails) {
             return res.status(404).json({ error: "Recruiter not found" });
         }
+        const independentRecruiterDetails = await IndependentRecruiter.findOne({ recruiterId: recruiterId });   // added by nuran
+        let indObj = null;
+        if(independentRecruiterDetails){
+            indObj = independentRecruiterDetails.toObject()
+        }
 
-        if (recruiterDetails.organizationOrIndependent === 'Independent') {
-            const independentRecruiterDetails = await IndependentRecruiter.findOne({ recruiterId: recruiterId });
-
-            if (!independentRecruiterDetails) {
-                return res.status(404).json({ error: "Recruiter details not found" });
-            }
-            return res.status(200).json({recruiterDetails,independentRecruiterDetails});
+        //if (recruiterDetails.organizationOrIndependent === 'Independent') {   <- anupa's
+        if (independentRecruiterDetails && recruiterDetails.organizationOrIndependent === 'Independent') {
+            //const independentRecruiterDetails = await IndependentRecruiter.findOne({ recruiterId: recruiterId }); <anupa's
+            
+            // if (!independentRecruiterDetails) {
+            //     return res.status(404).json({ error: "Recruiter details not found" }); <- anupa's
+            // }
+            //const mergedObject = Object.assign({}, recruiterDetails, independentRecruiterDetails);
+            
+            return res.status(200).json({...recruiterObj , ...indObj});
         } else {
-            return res.status(200).json({recruiterDetails});
+            console.log(recruiterDetails)
+            return res.status(200).json(recruiterDetails);
         }
     } catch (error) {
+        console.error(error)
         res.status(500).json({ error: "Server Error: Could not retrieve recruiter details" });
     }
 };
@@ -104,7 +130,6 @@ const getRecruiter = async (req, res) => {
 //UPDATE Profile details of recruiter - independent or organization representer
 const updateRecruiter = async (req, res) => {
     const { id } = req.params;
-
     try {
         const recruiterDetails = await Recruiter.findById(id);
         if (!recruiterDetails) {
@@ -112,18 +137,38 @@ const updateRecruiter = async (req, res) => {
         }
 
         // Excluding 'organizationOrIndependent' field(if there's one) from the update
-        const { organizationOrIndependent, ...updateFields } = req.body;
+        // const { organizationOrIndependent, ...updateFields } = req.body;
 
-        const updatedRecruiter = await Recruiter.findByIdAndUpdate(
-            id,
-            updateFields, // Only update the allowed fields
-            { new: true } // Return the updated document
-        );
+        // const updatedRecruiter = await Recruiter.findByIdAndUpdate(
+        //     id,
+        //     updateFields, // Only update the allowed fields
+        //     { new: true } // Return the updated document
+        // );
+        const updatedRecruiter = await Recruiter.findByIdAndUpdate(id, {
+            $set: {
+                firstName : req.body.fname,
+                lastName : req.body.lname,
+                email : req.body.email,
+                password: req.body.password,
+            }
+        }, {new:true});
+        
+        // new edit
+        const IndependentRecruiterExists = await IndependentRecruiter.findById(id);
 
-        if (recruiterDetails.organizationOrIndependent === 'Independent') {
+        // if(IndependentRecruiterExists){⬇️}
+        // if (recruiterDetails.organizationOrIndependent === 'Independent') { <--anupa's
+         if (IndependentRecruiterExists && recruiterDetails.organizationOrIndependent === 'Independent') {
             const updatedIndependentRecruiter = await IndependentRecruiter.findOneAndUpdate(
                 { recruiterId: id },
-                updateFields,
+                // updateFields
+                {
+                    phoneNo : req.body.contact,
+                    country : req.body.country,
+                    linkedInProfile : req.body.linkedInProfile,
+                    website: req.body.website,
+                    bio: req.body.bio,
+                },
                 { new: true }
             );
             if (!updatedIndependentRecruiter) {
@@ -131,15 +176,34 @@ const updateRecruiter = async (req, res) => {
             }
             return res.status(200).json({ updatedRecruiter, updatedIndependentRecruiter });
         } else {
-            return res.status(200).json(updatedRecruiter);
+            return res.status(200).json({updatedRecruiter});
         }
     } catch (error) {
         res.status(500).json({ error: "Server Error: Could not update recruiter details" });
     }
 };
+// const updateRecruiter = async (req,res,next) => {
+//     console.log(req.body)
+//     try{
+//         const updatedUser = await Recruiter.findByIdAndUpdate(req.params.id, {
+//             $set: { //  <- this will update the whatever is included below
+//                 firstName : req.body.fname,
+//                 lastName : req.body.lname,
+//                 email : req.body.email,
+//                 password: req.body.password,
+//             },  //this will return the previous info
+//         }, { new: true })   //when we use 'new: true' it will return the updated info
+//         res.status(200).json(updatedUser); //response
+//     } catch (error) {
+//         next(error);
+//     }
+// }
 
 
 //POST/CREATE organization details
+
+
+
 const createOrganization = async (req, res) => {
     const { recruiterId } = req.params;
     const {
@@ -147,10 +211,10 @@ const createOrganization = async (req, res) => {
         type,
         website,
         description,
-        email,
-        country,
-        city,
-        address,
+        // email,
+        // country,
+        // city,
+        // address,
         roleWithinOrganization 
     } = req.body;
 
@@ -172,10 +236,10 @@ const createOrganization = async (req, res) => {
             type,
             website,
             description,
-            email,
-            country,
-            city,
-            address
+            // email,
+            // country,
+            // city,
+            // address
         });
 
         // Creating the organization-representer record
@@ -191,10 +255,9 @@ const createOrganization = async (req, res) => {
     }
 };
 
-
 //GET organization details using recruiterId
 const getOrganization = async (req, res) => {
-    const { recruiterId } = req.body;
+    const { recruiterId } = req.params;
 
     try {
         // Checking if the recruiter exists
@@ -213,24 +276,21 @@ const getOrganization = async (req, res) => {
         if (!organizationRepresenter) {
             return res.status(404).json({ error: "Organization-representer details not found" });
         }
-
         // finding the organization using the organizationId from the organization-representer record
         const organization = await Organization.findById(organizationRepresenter.organizationId);
         if (!organization) {
             return res.status(404).json({ error: "Organization not found" });
         }
-
-        res.status(200).json(organization);
+        let organizationDetails = {name: organization.name, type: organization.type, website: organization.website, description: organization.description, roleWithinOrganization: organizationRepresenter.roleWithinOrganization};
+        res.status(200).json(organizationDetails);
     } catch (error) {
         res.status(500).json({ error: "Server Error: Could not retrieve organization details" });
     }
 };
 
-
 //PATCH/UPDATE organization details
 const updateOrganization = async (req, res) => {
     const { recruiterId } = req.params; 
-
     try {
         // Find the organization-representer record using the recruiterId
         const organizationRepresenter = await OrganizationRepresenter.findOne({ recruiterId: recruiterId });
@@ -506,8 +566,9 @@ module.exports = {
     createOrganization,
     updateOrganization,
     createRecruiter,
+    deleteRecruiter,
     updateRecruiter,
     saveIndependentRecruiterDetails,
     getRecruiter,
-    getVolunteerProfile
+    getVolunteerProfile,
 };

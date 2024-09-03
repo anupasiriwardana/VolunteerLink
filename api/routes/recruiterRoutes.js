@@ -15,6 +15,7 @@ const {
     createOrganization,
     updateOrganization,
     createRecruiter,
+    deleteRecruiter,
     saveIndependentRecruiterDetails,
     getRecruiter,
     updateRecruiter,
@@ -24,21 +25,23 @@ const {
 //recruiter signup - CREATE recruiter
 router.post('/signup',createRecruiter);
 
+//DELETE recruiter
+router.delete('/profile/:id',deleteRecruiter);
+
 //POST personal details of independent recruiter
 router.post('/profile/:id',saveIndependentRecruiterDetails);
 
 //GET Personal details of recruiter (independent or organization-represnter)
-router.get('/profile',getRecruiter);
+router.get('/profile/:id',getRecruiter);
 
 //UPDATE Personal details of recruiter (independent or organization-representer)
 router.patch('/profile/:id',updateRecruiter);
-
 
 //POST/CREATE organization details
 router.post('/organization/:recruiterId',createOrganization);
 
 //GET organization details
-router.get('/organization',getOrganization);
+router.get('/organization/:recruiterId',getOrganization);
 
 //PATCH/UPDATE organization details
 router.patch('/organization/:recruiterId',updateOrganization);

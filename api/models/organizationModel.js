@@ -20,19 +20,19 @@ const organizationSchema = new Schema({
     },
     email : {
         type: String,
-        required: true
+        required: false
     },
     country : {
         type: String,
-        required: true
+        required: false
     },
     city : {
         type: String,
-        required: true
+        required: false
     },
     address : {
         type: String,
-        required: true
+        required: false
     }
     
 },{timestamps : true});

@@ -51,20 +51,20 @@ router.patch('/organization/:recruiterId',updateOrganization);
 router.post('/opportunities/create/:recruiterId',createOpportunity);
 
 //GET all volunteering opportunities created by the recruiter
-router.get('/opportunities',getOpportunities);
+router.get('/opportunities/:recruiterId',getOpportunities);
 
 //GET a single volunteering opprotunity 
-router.get('/opportunities/:opportunityId',getOpportunity);
+router.get('/opportunity/:opportunityId',getOpportunity);
 
 //UPDATE a volunteering opportunity
 router.patch('/opportunities/:opportunityId',updateOpportunity);
 
 //DELETE a volunteering opportunity
-router.delete('/opportunities',deleteOpportunity);
+router.delete('/opportunities/:opportunityId',deleteOpportunity);
 
 
 //GET all volunteer applications
-router.get('/applications',getApplications);
+router.get('/applications/:recruiterId',getApplications);
 
 //UPDTAE/PATCH volunteer application
 router.patch('/applications/:applicationId',updateApplicationStatus);

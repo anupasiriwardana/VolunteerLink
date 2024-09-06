@@ -1,91 +1,203 @@
-import { Alert, Button, FileInput, Select, TextInput, Radio, Label } from 'flowbite-react'
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'
-import { useSelector }  from 'react-redux';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button, TextInput, Textarea, Select } from 'flowbite-react';
+import { useSelector } from 'react-redux';
 
-export default function RecCreateProject() {
+export default function CreateOpportunity() {
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [categories, setCategories] = useState('');
+    const [skillsRequired, setSkillsRequired] = useState('');
+    const [virtualOrInPerson, setVirtualOrInPerson] = useState('Virtual');
+    const [location, setLocation] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [applicationDeadline, setApplicationDeadline] = useState('');
+    const [orientationTraining, setOrientationTraining] = useState('');
+    const [formError, setFormError] = useState(null);
+    const [formSuccess, setFormSuccess] = useState(null);
+    const navigate = useNavigate();
+    const {currentUser} = useSelector(state => state.user);
 
-  const [ formData, setFormData] = useState({});
-  console.log(formData)
-  const [ publishError, setPublishError] = useState(null);
-  const [ publish, setPublish ] = useState(false);
-  const { currentUser } = useSelector(state => state.user);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const opportunityData = {
+            title,
+            description,
+            categories,
+            skillsRequired,
+            virtualOrInPerson,
+            location,
+            startDate,
+            endDate,
+            applicationDeadline,
+            orientationTraining
+        };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetch(`/api/recruiter/opportunities/create/${currentUser.user._id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      if(!res.ok){
-        setPublishError(data.message);
-        return;
-      }
-      if(res.ok){
-        setPublishError(null);
-        setPublish(true);
-      }
-    } catch (error) {
-      setPublishError(error.message);
-    }
-  }
+        try {
+            const response = await fetch(`/api/recruiter/opportunities/create/${currentUser.user._id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(opportunityData),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+              setFormError(data.error);
+            }else{
+              setFormSuccess('Volunteering Project created successfully');
+              setTitle('');
+              setDescription('');
+              setCategories('');
+              setSkillsRequired('');
+              setVirtualOrInPerson('Virtual');
+              setLocation('');
+              setStartDate('');
+              setEndDate('');
+              setApplicationDeadline('');
+              setOrientationTraining('');
+            }
+        } catch (err) {
+            setFormError(data.error || 'Server error. Please try again later.');
+        } finally {
+          clearMessages();
+        }
+    };
 
-  return (
-    <div className='p-3 mx-auto min-h-screen'>
-      <h1 className='text-center text-3xl mb-7 font-semibold'>Create Project</h1>
-      <form className='flex flex-col gap-4 border border-gray-500 rounded-2xl p-4 'onSubmit={handleSubmit}>
-        <div className='flex flex-col gap-4 sm:flex-row justify-between'>
-          <TextInput type='text' placeholder='Title' required id='title' className='flex-1' onChange={(e) => setFormData({...formData, title: e.target.value})} />
-          <Select onChange={(e)=> setFormData({...formData, categories: e.target.value})}>
-            <option value='uncategorized'>Select a category</option>
-            <option value='humanitarian'>Humanitarian</option>
-            <option value='environmental'>Environmental</option>
-            <option value='marine'>Marine conservation</option>
-            <option value='wildlife'>Wildlife</option>
-          </Select>
+    const clearMessages = () => {
+      setTimeout(() => {
+        setFormError(null);
+        setFormSuccess(null);
+      }, 5000);
+    };
+
+    return (
+        <div className="w-3/5 mx-auto p-6 bg-white rounded-lg shadow-md m-7 border">
+            <h2 className="text-2xl font-semibold mb-4 text-center text-[#333333]">Create New Volunteering Project</h2>
+            <form onSubmit={handleSubmit} className="w-full">
+                <div>
+                    <label className="block text-[#333333] mb-1" htmlFor="title">Title</label>
+                    <TextInput 
+                        id="title"
+                        type="text" 
+                        placeholder="Enter opportunity title" 
+                        value={title} 
+                        onChange={(e) => setTitle(e.target.value)} 
+                        required 
+                        className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
+                    />
+                </div>
+                <div>
+                    <label className="block text-[#333333] mb-1" htmlFor="description">Description</label>
+                    <Textarea 
+                        id="description"
+                        placeholder="Enter opportunity description" 
+                        value={description} 
+                        onChange={(e) => setDescription(e.target.value)} 
+                        required 
+                        className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
+                    />
+                </div>
+                <div>
+                    <label className="block text-[#333333] mb-1" htmlFor="categories">Categories</label>
+                    <TextInput 
+                        id="categories"
+                        type="text" 
+                        placeholder="Enter categories" 
+                        value={categories} 
+                        onChange={(e) => setCategories(e.target.value)} 
+                        required 
+                        className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
+                    />
+                </div>
+                <div>
+                    <label className="block text-[#333333] mb-1" htmlFor="skillsRequired">Skills Required</label>
+                    <TextInput 
+                        id="skillsRequired"
+                        type="text" 
+                        placeholder="Enter skills required" 
+                        value={skillsRequired} 
+                        onChange={(e) => setSkillsRequired(e.target.value)} 
+                        className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
+                    />
+                </div>
+                <div>
+                    <label className="block text-[#333333] mb-1" htmlFor="virtualOrInPerson">Mode</label>
+                    <Select 
+                        id="virtualOrInPerson"
+                        value={virtualOrInPerson} 
+                        onChange={(e) => setVirtualOrInPerson(e.target.value)} 
+                        required
+                        className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
+                    >
+                        <option value="Virtual">Virtual</option>
+                        <option value="In-Person">In-Person</option>
+                    </Select>
+                </div>
+                {virtualOrInPerson === 'In-Person' && (
+                    <div>
+                        <label className="block text-[#333333] mb-1" htmlFor="location">Location</label>
+                        <TextInput 
+                            id="location"
+                            type="text" 
+                            placeholder="Enter location" 
+                            value={location} 
+                            onChange={(e) => setLocation(e.target.value)} 
+                            required 
+                            className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
+                        />
+                    </div>
+                )}
+                <div>
+                    <label className="block text-[#333333] mb-1" htmlFor="startDate">Start Date</label>
+                    <TextInput 
+                        id="startDate"
+                        type="date" 
+                        value={startDate} 
+                        onChange={(e) => setStartDate(e.target.value)} 
+                        required 
+                        className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
+                    />
+                </div>
+                <div>
+                    <label className="block text-[#333333] mb-1" htmlFor="endDate">End Date</label>
+                    <TextInput 
+                        id="endDate"
+                        type="date" 
+                        value={endDate} 
+                        onChange={(e) => setEndDate(e.target.value)} 
+                        required 
+                        className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
+                    />
+                </div>
+                <div>
+                    <label className="block text-[#333333] mb-1" htmlFor="applicationDeadline">Application Deadline</label>
+                    <TextInput 
+                        id="applicationDeadline"
+                        type="date" 
+                        value={applicationDeadline} 
+                        onChange={(e) => setApplicationDeadline(e.target.value)} 
+                        required 
+                        className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
+                    />
+                </div>
+                <div>
+                    <label className="block text-[#333333] mb-1" htmlFor="orientationTraining">Orientation & Training</label>
+                    <Textarea 
+                        id="orientationTraining"
+                        placeholder="Enter orientation & training details" 
+                        value={orientationTraining} 
+                        onChange={(e) => setOrientationTraining(e.target.value)} 
+                        className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
+                    />
+                </div>
+                <Button type="submit" color="green" className="m-7 w-1/2 bg-[#1aac83] hover:text-[#1aac83] text-white mx-auto">
+                    Create Volunteering Project
+                </Button>
+                {formError && <p className="text-red-500 text-center mb-4">{formError}</p>}
+                {formSuccess && <p className="text-[#1aac83] text-center mb-4">{formSuccess}</p>}
+            </form>
         </div>
-        <div className='flex gap-4 items-center justify-between border-4 border-teal-400 border-dotted p-3'>
-          <span className='text-l'>Insert project photo : </span> 
-          <FileInput type='file' accept='image/*' onChange={(e) => setFormData({...formData, projectPhoto: e.target.files[0]})}/>
-        </div>
-        <div className='flex justify-around items-center mt-3 mb-3'>
-          <div>
-          <Radio name='virtualOrInPerson' id='Virtual' className='mr-3 p-2' onChange={(e) => setFormData({...formData, virtualOrInPerson: e.target.id})}/>
-          <Label value="Virtual"/>
-          </div>
-          <div>
-          <Radio name='virtualOrInPerson' id='In-Person' className='mr-3 p-2' onChange={(e) => setFormData({...formData, virtualOrInPerson: e.target.id})}/>
-          <Label value="In person"/>
-          </div>
-        </div>
-        <div className='flex justify-around items-center'>
-          <span>Start Date :</span>
-          <TextInput type='date' title='Start Date' id='startDate' onChange={(date) => setFormData({...formData, startDate: new Date(date.target.value)})}/>
-        </div>
-        <div className='flex justify-around items-center'>
-         <span>End Date :</span>
-          <TextInput type='date' title='End Date' id='endDate' onChange={(date) => setFormData({...formData, endDate: new Date(date.target.value)})}/>
-        </div>
-        <div className='flex justify-around items-center'>
-          <span>Application Deadline :</span>
-          <TextInput type='date' title='Application Deadline' id='applicationDeadline' onChange={(date) => setFormData({...formData, applicationDeadline: new Date(date.target.value)})}/>
-        </div>
-        <span className='mt-3'>Enter project description below:</span>
-        
-        <ReactQuill theme='snow' placeholder='write something...' className='h-72 mb-12' required 
-          onChange={ (value)=>  { const cleanValue = value.replace(/<\/?p>/g, ''); setFormData({...formData, description: cleanValue}) } }/>
-        
-        <Button type='submit' gradientDuoTone='greenToBlue'>Post</Button>
-        { publishError && <Alert color='failure' className='mt-5'>{publishError}</Alert>}
-        { publish && <Alert color='success' className='mt-5'>Opportunity created successfully</Alert>}
-      </form>
-    </div>
-  )
+    );
 }

@@ -6,20 +6,27 @@ import RecDashOrgRecProfile from '../Components/RecDashOrgRecProfile';
 import RecDashViewProject from '../Components/RecDashViewProject';
 import RecDashCreateProject from '../Components/RecDashCreateProject';
 import RecDashApplications from '../Components/RecDashApplications';
+import RecDashProjectInfo from '../Components/RecDashProjectInfo';
+import RecDashApplicationInfo from '../Components/RecDashApplicationInfo';
 import { useSelector } from 'react-redux';
 
 export default function Dashboard() {
 
   const location = useLocation(); //initialize useLocation
   const [tab, setTab] = useState('');
+  const [urlSection, setUrlSection] = useState(null);
   const { currentUser } = useSelector(state => state.user);
   
   //evach time we come to this page, we get irs tab⬇️
   useEffect( ()=> {
     const urlParams = new URLSearchParams(location.search); //URLSearchParams returns parameters
     const tabFromUrl = urlParams.get('tab');
+    const sectionFromUrl = urlParams.get('section');
     if(tabFromUrl){ //if the tab from the url is not null, do⬇️
       setTab(tabFromUrl)
+    }
+    if (sectionFromUrl) {
+      setUrlSection(sectionFromUrl);
     }
   }, [location.search]) //this useEffect renders every time location.search updates
 
@@ -32,9 +39,15 @@ export default function Dashboard() {
       {/* profile... */}
       { tab === 'ind-rec-profile' && <RecDashIndRecProfile/>} {/* DashProfile is only visible when we're in the profile tab */}
       { tab === 'org-rec-profile' && <RecDashOrgRecProfile/>} {/* DashProfile is only visible when we're in the profile tab */}
-      { tab === 'view-projects' && <RecDashViewProject/> } {/* DashPosts is only visible when we're in the posts tab */}
+      
+      { tab === 'view-projects' && urlSection == 'projects' && <RecDashViewProject/> } {/* DashPosts is only visible when we're in the posts tab */}
+      { tab === 'view-projects' && urlSection == 'projectdetails' && <RecDashProjectInfo/> } {/* DashPosts is only visible when we're in the posts tab */}
+      
+      
       { tab === 'create-projects' && <RecDashCreateProject/> } {/* DashPosts is only visible when we're in the posts tab */}
-      { tab === 'applications' && <RecDashApplications/> } {/* DashPosts is only visible when we're in the posts tab */}
+      
+      { tab === 'applications' && urlSection == 'applications' &&<RecDashApplications/> } {/* DashPosts is only visible when we're in the posts tab */}
+      { tab === 'applications' && urlSection == 'info' &&<RecDashApplicationInfo/> } {/* DashPosts is only visible when we're in the posts tab */}
     </div>
   )
 }

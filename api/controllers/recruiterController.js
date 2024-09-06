@@ -54,35 +54,35 @@ const deleteRecruiter = async (req, res) => {
     }
 };
 
-//POST personal details of independent recruiter
+//POST personal details of independent recruiter -DONT CHANGE THIS
 const saveIndependentRecruiterDetails = async(req, res) => {
     const { id } = req.params;  
     console.log(id)
     const {
-        // nicNo,
+        nicNo,
         phoneNo,
         country,
-        // city,
-        // address,
+        city,
+        address,
         linkedInProfile,
         website,
         bio,
-        // services
+        services
     } = req.body;
 
     try {
         // Add doc to db
         const newIndependentRecruiterDetails = await IndependentRecruiter.create({
             recruiterId: id,  // Using recruiter ID from params
-            // nicNo,
-            phoneNo: req.body.contact,
-            country: req.body.country,
-            // city,
-            // address,
-            linkedInProfile: req.body.linkedInProfile,
-            website: req.body.website,
-            bio: req.body.bio,
-            // services
+            nicNo,
+            phoneNo,
+            country,
+            city,
+            address,
+            linkedInProfile,
+            website,
+            bio,
+            services
         });
         res.status(200).json(newIndependentRecruiterDetails);
     } catch (error) {
@@ -200,10 +200,7 @@ const updateRecruiter = async (req, res) => {
 // }
 
 
-//POST/CREATE organization details
-
-
-
+//POST/CREATE organization details- DON'T CHANGE
 const createOrganization = async (req, res) => {
     const { recruiterId } = req.params;
     const {
@@ -211,10 +208,10 @@ const createOrganization = async (req, res) => {
         type,
         website,
         description,
-        // email,
-        // country,
-        // city,
-        // address,
+        email,
+        country,
+        city,
+        address,
         roleWithinOrganization 
     } = req.body;
 
@@ -226,7 +223,7 @@ const createOrganization = async (req, res) => {
         }
 
         // checking if recruiter is an organization-representer
-        if (recruiter.organizationOrIndependent !== 'Organization-representer') {
+        if (recruiter.organizationOrIndependent != 'Organization-representer') {
             return res.status(403).json({ error: "Recruiter is not an organization-representer" });
         }
 
@@ -236,10 +233,10 @@ const createOrganization = async (req, res) => {
             type,
             website,
             description,
-            // email,
-            // country,
-            // city,
-            // address
+            email,
+            country,
+            city,
+            address
         });
 
         // Creating the organization-representer record
@@ -255,7 +252,7 @@ const createOrganization = async (req, res) => {
     }
 };
 
-//GET organization details using recruiterId
+//GET organization details using recruiterId- DON'T CHANGE
 const getOrganization = async (req, res) => {
     const { recruiterId } = req.params;
 
@@ -281,14 +278,13 @@ const getOrganization = async (req, res) => {
         if (!organization) {
             return res.status(404).json({ error: "Organization not found" });
         }
-        let organizationDetails = {name: organization.name, type: organization.type, website: organization.website, description: organization.description, roleWithinOrganization: organizationRepresenter.roleWithinOrganization};
-        res.status(200).json(organizationDetails);
+        res.status(200).json(organization);
     } catch (error) {
         res.status(500).json({ error: "Server Error: Could not retrieve organization details" });
     }
 };
 
-//PATCH/UPDATE organization details
+//PATCH/UPDATE organization details -DON'T CHANGE
 const updateOrganization = async (req, res) => {
     const { recruiterId } = req.params; 
     try {
@@ -317,7 +313,7 @@ const updateOrganization = async (req, res) => {
 
 
 
-//POST a new volunteering opportunity
+//POST a new volunteering opportunity - DON'T CHANGE
 const createOpportunity = async (req, res) => {
     const { recruiterId } = req.params; 
     const {
@@ -346,9 +342,17 @@ const createOpportunity = async (req, res) => {
         if (recruiter.organizationOrIndependent === 'Organization-representer') {
             const organizationRepresenter = await OrganizationRepresenter.findOne({ recruiterId: recruiterId });
             if (!organizationRepresenter) {
-                return res.status(404).json({ error: "Organization-representer details not found" });
+                //means hasn't creaatedd an organization yet
+                return res.status(404).json({ error: "You are required to provide Your Organization Details through Profile Section first" });
             }
             organizationId = organizationRepresenter.organizationId;
+        }else{
+            //recruiter is independent
+            const reccruiterDetails = await IndependentRecruiter.findOne({ recruiterId: recruiterId})
+            if(!reccruiterDetails){
+                //means hasn't entered personal details yet
+                return res.status(404).json({ error: "Please Enter Your Personal Details through Profile Section first"});
+            }
         }
 
         // Add the new opportunity to the database
@@ -373,9 +377,9 @@ const createOpportunity = async (req, res) => {
     }
 };
 
-//GET all volunteering opportunities created by the recruiter
+//GET all volunteering opportunities created by the recruiter - DON'T CHANGE
 const getOpportunities = async(req, res)=> {
-    const { recruiterId } =req.body;
+    const { recruiterId } =req.params;
     try{
         const opportunities = await Opportunity.find({ recruiterId: recruiterId }).sort({createdAt : -1});
         if(!opportunities){
@@ -387,7 +391,7 @@ const getOpportunities = async(req, res)=> {
     }
 }
 
-//GET a single volunteering opprotunity 
+//GET a single volunteering opprotunity -DON'T CHANGE
 const getOpportunity = async(req, res) => {
     const { opportunityId } = req.params;
     try{
@@ -401,7 +405,7 @@ const getOpportunity = async(req, res) => {
     }
 };
 
-//UPDATE a volunteering opportunity
+//UPDATE a volunteering opportunity - DON'T CHANGE
 const updateOpportunity = async (req, res) => {
     const { opportunityId } = req.params;
     const { virtualOrInPerson,recruiterId, organizationId, ...updateFields } = req.body;
@@ -427,9 +431,9 @@ const updateOpportunity = async (req, res) => {
     }
 };
 
-//DELETE a volunteering opportunity
+//DELETE a volunteering opportunity - DON'T CHANGE
 const deleteOpportunity = async(req, res) => {
-    const { opportunityId } = req.body;
+    const { opportunityId } = req.params;
     try{
         const removedOpportunity = await Opportunity.findOneAndDelete({_id: opportunityId});
         if(!removedOpportunity){
@@ -442,9 +446,9 @@ const deleteOpportunity = async(req, res) => {
 };
 
 
-//GET all volunteer applications based on reccruiter Id
+//GET all volunteer applications based on reccruiter Id - DON'T CHANGE
 const getApplications = async (req, res) => {
-    const { recruiterId } = req.body;
+    const { recruiterId } = req.params;
 
     try {
         // Finding opportunities associated with the recruiterId
@@ -470,7 +474,7 @@ const getApplications = async (req, res) => {
 };
 
 
-//UPDTAE/PATCH volunteer application
+//UPDTAE/PATCH volunteer application - DON'T CHANGE
 const updateApplicationStatus = async(req, res) => {
     const { applicationId } = req.params; 
     const { status } = req.body; 
@@ -513,7 +517,7 @@ const updateApplicationStatus = async(req, res) => {
 //     }
 // };
 
-//GET a volunteer profile using applicationId
+//GET a volunteer profile using applicationId - DON'T CHANGE
 const getVolunteerProfile = async (req, res) => {
     const { applicationId } = req.params;
 

@@ -278,7 +278,10 @@ const getOrganization = async (req, res) => {
         if (!organization) {
             return res.status(404).json({ error: "Organization not found" });
         }
-        res.status(200).json(organization);
+        res.status(200).json({
+            ...organization.toObject(),
+            roleWithinOrganization : organizationRepresenter.roleWithinOrganization
+        });
     } catch (error) {
         res.status(500).json({ error: "Server Error: Could not retrieve organization details" });
     }
@@ -301,11 +304,18 @@ const updateOrganization = async (req, res) => {
             { new: true } // Return the updated document
         );
 
+        //if roleWithinorganization is present
+        const updatedOrganizationRepresenter = await OrganizationRepresenter.findByIdAndUpdate(
+            organizationRepresenter._id,
+            { roleWithinOrganization: req.body.roleWithinOrganization },
+            { new: true }
+        );
+
         if (!updatedOrganization) {
             return res.status(404).json({ error: "Organization not found" });
         }
 
-        res.status(200).json(updatedOrganization);
+        res.status(200).json({updatedOrganization,updatedOrganizationRepresenter});
     } catch (error) {
         res.status(500).json({ error: "Server Error: Could not update organization" });
     }

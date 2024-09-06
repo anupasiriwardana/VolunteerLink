@@ -50,6 +50,7 @@ export default function RecDashOrgRecProfile() {
         const data = await res.json();
         console.log(data);
         if(!res.ok){
+          //getting the error response from the api-> through data.error
           setactivityError(data.error);
         }else{
           setActivitySuccess("Profile Updated successfully");

@@ -254,6 +254,7 @@ const updateRecruiter = async (req, res) => {
 const createOrganization = async (req, res) => {
     const { recruiterId } = req.params;
     const {
+        orgId,
         name,
         type,
         website,
@@ -277,7 +278,21 @@ const createOrganization = async (req, res) => {
             return res.status(403).json({ error: "Recruiter is not an organization-representer" });
         }
 
-        // Creating the organization
+        //reprsenter of an exisiting organization
+        if(orgId){
+            const existingOrg = await Organization.findById(orgId);
+            if(existingOrg){
+                //create organization representer record
+                const newOrganizationRepresenter = await OrganizationRepresenter.create({
+                    recruiterId: recruiter._id,
+                    organizationId: orgId,
+                    roleWithinOrganization
+                });
+                return res.status(201).json(newOrganizationRepresenter);
+            }
+        }
+
+        // Creating the a new organization, if the organization is not exisiting
         const newOrganization = await Organization.create({
             name,
             type,
@@ -298,6 +313,7 @@ const createOrganization = async (req, res) => {
 
         res.status(200).json({newOrganization,newOrganizationRepresenter});
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Server Error: Could not create organization" });
     }
 };
@@ -614,6 +630,19 @@ const getVolunteerProfile = async (req, res) => {
     }
 };
 
+//get organizations
+const getOrganizations = async (req, res) => {
+    try {
+        const organizations = await Organization.find();
+        if(!organizations){
+            return res.status(404).json({ error: "No organizations found" });
+        }
+        res.status(200).json(organizations);
+    } catch (error) {
+        res.status(500).json({ error: "Server Error: Could not retrieve organizations" });
+    }
+};
+
 
 
 
@@ -635,4 +664,5 @@ module.exports = {
     saveIndependentRecruiterDetails,
     getRecruiter,
     getVolunteerProfile,
+    getOrganizations
 };

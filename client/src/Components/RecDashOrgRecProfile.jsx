@@ -14,6 +14,7 @@ export default function RecDashOrgRecProfile() {
     const { currentUser} = useSelector(state => state.user)
     const [ profileForm, setProfileForm ] = useState({});
     const [ orgForm, setOrgForm ] = useState({});
+    const [ fetchedDetails, setFetchedDetails ] = useState({});
     const [ organizationDetails, setOrganizationDetails ] = useState({});
     const [ activitySuccess , setActivitySuccess ] = useState(null);
     const [ activityError, setactivityError ] = useState(null);
@@ -49,12 +50,12 @@ export default function RecDashOrgRecProfile() {
         const data = await res.json();
         console.log(data);
         if(!res.ok){
-          setactivityError(data.message);
+          setactivityError(data.error);
         }else{
           setActivitySuccess("Profile Updated successfully");
         }
       } catch (error) {
-        setactivityError(error.message);
+        setactivityError(data.error);
       }finally {
         clearMessages();
       }
@@ -68,6 +69,7 @@ export default function RecDashOrgRecProfile() {
           if(res.ok){
             setOrganizationDetails(data);
             setOrgDetailsPresent(true);
+            await fetchIndeRecDetails();
           }else{
             setOrgDetailsPresent(false);
           }
@@ -75,6 +77,19 @@ export default function RecDashOrgRecProfile() {
           console.log(error.message);
         }
       }
+
+      const fetchIndeRecDetails = async () => {
+        try {
+          const res = await fetch(`/api/recruiter/profile/${currentUser.user._id}`);
+          const data = await res.json();
+          if(res.ok){
+            setFetchedDetails(data)
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
       if(currentUser.user.organizationOrIndependent === 'Organization-representer'){
         fetchOrganization(); //Since async can't directly be used for useEffect(), we define a createPosts() function and call it inside the useEffect()
       }
@@ -181,21 +196,21 @@ export default function RecDashOrgRecProfile() {
               <div className='sm:flex justify-between mb-5 gap-5'>
                 <div>
                   <Label value='First name'/>
-                  <TextInput type='text' id='fname' defaultValue={currentUser.user.firstName} onChange={handleProfileChange}/>
+                  <TextInput type='text' id='fname' defaultValue={fetchedDetails.firstName} onChange={handleProfileChange}/>
                 </div>
                 <div>
                   <Label value='Last name'/>
-                  <TextInput type='text' id='lname' defaultValue={currentUser.user.lastName} onChange={handleProfileChange}/>
+                  <TextInput type='text' id='lname' defaultValue={fetchedDetails.lastName} onChange={handleProfileChange}/>
                 </div>
               </div>
               <div className='sm:flex justify-between mb-5'>
                 <div className=''>
                   <Label value='Email'/>
-                  <TextInput type='email' id='email' defaultValue={currentUser.user.email} onChange={handleProfileChange}/>
+                  <TextInput type='email' id='email' defaultValue={fetchedDetails.email} onChange={handleProfileChange}/>
                 </div>
                 <div className=''>
                   <Label value='Password'/>
-                  <TextInput type='password' id='password' defaultValue={currentUser.user.password} onChange={handleProfileChange}/>  
+                  <TextInput type='password' id='password' defaultValue={fetchedDetails.password} onChange={handleProfileChange}/>  
                 </div>  
               </div>  
               <Button type='submit' className='bg-green-500 block mx-auto' onClick={handleUpdateProfile}>Update profile</Button>

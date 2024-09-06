@@ -53,14 +53,14 @@ export default function RecDashIndRecProfile() {
         console.log(data);
         if(!res.ok){
           // dispatch(updateFailure(data.message));
-          setactivityError(data.message);
+          setactivityError(data.error);
         }else{
           // dispatch(updateSuccess(data));
           setActivitySuccess("Profile Updated successfully");
         }
       } catch (error) {
         // dispatch(updateFailure(error.message));
-        setactivityError(error.message);
+        setactivityError(data.error);
       }
     }
 

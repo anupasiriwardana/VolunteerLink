@@ -128,60 +128,60 @@ const getRecruiter = async (req, res) => {
 };
 
 //UPDATE Profile details of recruiter - independent or organization representer
-const updateRecruiter = async (req, res) => {
-    const { id } = req.params;
-    try {
-        const recruiterDetails = await Recruiter.findById(id);
-        if (!recruiterDetails) {
-            return res.status(404).json({ error: "Recruiter not found" });
-        }
+// const updateRecruiter = async (req, res) => {
+//     const { id } = req.params;
+//     try {
+//         const recruiterDetails = await Recruiter.findById(id);
+//         if (!recruiterDetails) {
+//             return res.status(404).json({ error: "Recruiter not found" });
+//         }
 
-        // Excluding 'organizationOrIndependent' field(if there's one) from the update
-        // const { organizationOrIndependent, ...updateFields } = req.body;
+//         // Excluding 'organizationOrIndependent' field(if there's one) from the update
+//         // const { organizationOrIndependent, ...updateFields } = req.body;
 
-        // const updatedRecruiter = await Recruiter.findByIdAndUpdate(
-        //     id,
-        //     updateFields, // Only update the allowed fields
-        //     { new: true } // Return the updated document
-        // );
-        const updatedRecruiter = await Recruiter.findByIdAndUpdate(id, {
-            $set: {
-                firstName : req.body.fname,
-                lastName : req.body.lname,
-                email : req.body.email,
-                password: req.body.password,
-            }
-        }, {new:true});
+//         // const updatedRecruiter = await Recruiter.findByIdAndUpdate(
+//         //     id,
+//         //     updateFields, // Only update the allowed fields
+//         //     { new: true } // Return the updated document
+//         // );
+//         const updatedRecruiter = await Recruiter.findByIdAndUpdate(id, {
+//             $set: {
+//                 firstName : req.body.fname,
+//                 lastName : req.body.lname,
+//                 email : req.body.email,
+//                 password: req.body.password,
+//             }
+//         }, {new:true});
         
-        // new edit
-        const IndependentRecruiterExists = await IndependentRecruiter.findById(id);
+//         // new edit
+//         const IndependentRecruiterExists = await IndependentRecruiter.findOne({ recruiterId: id});
 
-        // if(IndependentRecruiterExists){⬇️}
-        // if (recruiterDetails.organizationOrIndependent === 'Independent') { <--anupa's
-         if (IndependentRecruiterExists && recruiterDetails.organizationOrIndependent === 'Independent') {
-            const updatedIndependentRecruiter = await IndependentRecruiter.findOneAndUpdate(
-                { recruiterId: id },
-                // updateFields
-                {
-                    phoneNo : req.body.contact,
-                    country : req.body.country,
-                    linkedInProfile : req.body.linkedInProfile,
-                    website: req.body.website,
-                    bio: req.body.bio,
-                },
-                { new: true }
-            );
-            if (!updatedIndependentRecruiter) {
-                return res.status(404).json({ error: "Recruiter details not found" });
-            }
-            return res.status(200).json({ updatedRecruiter, updatedIndependentRecruiter });
-        } else {
-            return res.status(200).json({updatedRecruiter});
-        }
-    } catch (error) {
-        res.status(500).json({ error: "Server Error: Could not update recruiter details" });
-    }
-};
+//         // if(IndependentRecruiterExists){⬇️}
+//         // if (recruiterDetails.organizationOrIndependent === 'Independent') { <--anupa's
+//          if (IndependentRecruiterExists && recruiterDetails.organizationOrIndependent === 'Independent') {
+//             const updatedIndependentRecruiter = await IndependentRecruiter.findOneAndUpdate(
+//                 { recruiterId: id },
+//                 // updateFields
+//                 {
+//                     phoneNo : req.body.contact,
+//                     country : req.body.country,
+//                     linkedInProfile : req.body.linkedInProfile,
+//                     website: req.body.website,
+//                     bio: req.body.bio,
+//                 },
+//                 { new: true }
+//             );
+//             if (!updatedIndependentRecruiter) {
+//                 return res.status(404).json({ error: "Recruiter details not found" });
+//             }
+//             return res.status(200).json({ updatedRecruiter, updatedIndependentRecruiter });
+//         } else {
+//             return res.status(200).json({updatedRecruiter});
+//         }
+//     } catch (error) {
+//         res.status(500).json({ error: "Server Error: Could not update recruiter details" });
+//     }
+// };
 // const updateRecruiter = async (req,res,next) => {
 //     console.log(req.body)
 //     try{
@@ -198,6 +198,56 @@ const updateRecruiter = async (req, res) => {
 //         next(error);
 //     }
 // }
+
+const updateRecruiter = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const recruiterDetails = await Recruiter.findById(id);
+        if (!recruiterDetails) {
+            return res.status(404).json({ error: "Recruiter not found" });
+        }
+
+        // Excluding 'organizationOrIndependent' field(if there's one) from the update
+        const { email, ...updateFields } = req.body;
+        // checking if the email is already used by another admin, volunteer, or recruiter
+        if (email) {
+            const existingVolunteer = await Volunteer.findOne({ email });
+            const existingRecruiter = await Recruiter.findOne({ email });
+            const existingAdmin = await Admin.findOne({ email });
+
+            if (existingAdmin || existingVolunteer || (existingRecruiter && existingRecruiter._id.toString() != id)) {
+                return res.status(400).json({ error: "Email is already in use" });
+            }
+        }
+        updateFields.email = email;
+
+        const updatedRecruiter = await Recruiter.findByIdAndUpdate(id, {
+            $set: {
+                firstName : updateFields.fname,
+                lastName : updateFields.lname,
+                email : updateFields.email,
+                password: updateFields.password,
+            }
+        }, {new:true});
+
+        if (recruiterDetails.organizationOrIndependent === 'Independent') {
+            const updatedIndependentRecruiter = await IndependentRecruiter.findOneAndUpdate(
+                { recruiterId: id },
+                updateFields,
+                { new: true }
+            );
+            if (!updatedIndependentRecruiter) {
+                return res.status(404).json({ error: "Recruiter details not found" });
+            }
+            return res.status(200).json({ updatedRecruiter, updatedIndependentRecruiter });
+        } else {
+            return res.status(200).json(updatedRecruiter);
+        }
+    } catch (error) {
+        res.status(500).json({ error: "Server Error: Could not update recruiter details" });
+    }
+};
 
 
 //POST/CREATE organization details- DON'T CHANGE

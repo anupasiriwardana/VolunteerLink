@@ -19,7 +19,8 @@ const {
     saveIndependentRecruiterDetails,
     getRecruiter,
     updateRecruiter,
-    getVolunteerProfile
+    getVolunteerProfile,
+    getOrganizations
 } = require('../controllers/recruiterController');
 
 //recruiter signup - CREATE recruiter
@@ -75,6 +76,9 @@ router.patch('/applications/:applicationId',updateApplicationStatus);
 
 //GET a volunteer profile
 router.get('/applications/volunteerprofile/:applicationId',getVolunteerProfile);
+
+//get organizations
+router.get('/organizations',getOrganizations);
 
 
 

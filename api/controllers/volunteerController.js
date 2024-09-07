@@ -4,6 +4,7 @@ const  Opportunity  = require('../models/opportunityModel');
 const  Application  = require('../models/applicationModel');
 const { Recruiter } = require('../models/recruiterUserModel');
 const Admin = require('../models/adminModel');
+const { hashPassword } = require('./passwordHandler');
 
 
 //volunteer signup - create POST volunteer
@@ -20,9 +21,16 @@ const createVolunteer = async (req, res) => {
             return res.status(400).json({ error: "Email is already in use" });
         }
 
-        // Creating a new volunteer if the email is not in use
-        const newVolunteer = await Volunteer.create({ firstName, lastName, email, password });
-        res.status(201).json(newVolunteer);
+        const hashedPassword = await hashPassword(password); //using the impoted func to hash pswd
+
+        // Creating a new volunteer if the email is not in use and after hashing the password
+        const newVolunteer = await Volunteer.create({ 
+            firstName, 
+            lastName, 
+            email, 
+            password : hashedPassword
+        });
+        res.status(201).json({message : "Volunteer Created successfully"});
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Server Error: Could not create volunteer" });
@@ -77,8 +85,8 @@ const updateVolunteerDetails = async (req, res) => {
     const { volunteerId } = req.params;
 
     try {
-        // remivg volunteerId from request body if present, and extraxting email
-        const { volunteerId: _omit, email, ...updateFields } = req.body;
+        // and extraxting email and pasword
+        const { email, password, ...updateFields } = req.body;
 
         if (email) {
             // checking if the email is already used by another recruiter volunteer admin
@@ -91,6 +99,10 @@ const updateVolunteerDetails = async (req, res) => {
             }
 
             updateFields.email = email; //inclusing email in upate fields
+        }
+        if(password && password != ''){
+            const hashedPassword = await hashPassword(password); //using the impoted func to hash pswd
+            updateFields.password = hashedPassword;
         }
 
         const updatedVolunteer = await Volunteer.findByIdAndUpdate(

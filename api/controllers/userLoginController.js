@@ -3,6 +3,9 @@ const Admin = require('../models/adminModel');
 const {Recruiter} = require('../models/recruiterUserModel');
 const {Volunteer} = require('../models/volunteerUserModel');
 
+//importing paswd compring func
+const { comparePassword } = require('./passwordHandler');
+
 // userlogin controler func
 const userLogin = async (req, res) => {
     const { email, password } = req.body;
@@ -14,12 +17,14 @@ const userLogin = async (req, res) => {
         // Checking wehther email exists in admin
         user = await Admin.findOne({ email });
         if (user) {
-            if (user.password === password) {
+            // Comparing password
+            const isPswdMatch = await comparePassword(password, user.password);
+            if (isPswdMatch) {
                 userType = "admin";
                 return res.status(200).json({ 
                     message: "Login successful", 
                     userType,
-                    user 
+                    user: { _id: user._id } //pasing only id
                 });
             } else {
                 return res.status(400).json({ error: "Invalid password" });
@@ -29,7 +34,9 @@ const userLogin = async (req, res) => {
         // Checking wehther email exists in recruiter
         user = await Recruiter.findOne({ email });
         if (user) {
-            if (user.password === password) {
+            // Comparing password
+            const isPswdMatch = await comparePassword(password, user.password);
+            if (isPswdMatch) {
                 // now checking whther recruiter is independent or organization-representer
                 if(user.organizationOrIndependent == "Organization-representer"){
                     userType = "organization-recruiter";
@@ -39,7 +46,7 @@ const userLogin = async (req, res) => {
                 return res.status(200).json({ 
                     message: "Login successful", 
                     userType,
-                    user 
+                    user: { _id: user._id }
                 });
             } else {
                 return res.status(400).json({ error: "Invalid password" });
@@ -49,12 +56,14 @@ const userLogin = async (req, res) => {
         // Checking if email exists in Volunteer 
         user = await Volunteer.findOne({ email });
         if (user) {
-            if (user.password === password) {
+            // Comparing password
+            const isPswdMatch = await comparePassword(password, user.password);
+            if (isPswdMatch) {
                 userType = "volunteer";
                 return res.status(200).json({ 
                     message: "Login successful", 
                     userType,
-                    user 
+                    user: { _id: user._id }
                 });
             } else {
                 return res.status(400).json({ error: "Invalid password" });

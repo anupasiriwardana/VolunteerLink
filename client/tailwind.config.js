@@ -9,10 +9,16 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {
-        customGreen: '#laac83',
+      fontFamily: {
+        karla: ['Karla', 'sans-serif'],
+        dmserif:['DM Serif Text', 'serif'],
       },
-    },
+
+      colors: {
+        customGreen: '#1aac83',
+      },
+
+    },    
   },
   plugins: [
     flowbite.plugin(),

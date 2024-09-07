@@ -1,9 +1,30 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
+import { Avatar } from 'flowbite-react'
+import { useSelector } from 'react-redux';
 
-const Navbar = () => {
+export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const { currentUser } = useSelector( state => state.user)
+
+    let link;
+    if (currentUser) {
+      switch (currentUser.userType) {
+        case 'volunteer':
+          link = 'volunteer';
+          break;
+        case 'organization-recruiter':
+          link = 'rec-dashboard';
+          break;
+        case 'independent-recruiter':
+          link = 'rec-dashboard';
+          break;
+        case 'admin' :
+          link = 'admin';
+          break;
+      }
+    }
 
   return (
     <nav className="bg-white py-4 w-full font-karla"> {/* Set width to full */}
@@ -18,11 +39,11 @@ const Navbar = () => {
           
           <div className="hidden md:block">
             <div className="ml-10 flex items-center space-x-4">
-              <Link to="/vol-sign-up" className="text-gray-700 hover:text-customGreen px-3 py-2 rounded-md text-sm font-medium">
+              <Link to="/findOpportunities" className="text-gray-700 hover:text-customGreen px-3 py-2 rounded-md text-sm font-medium">
                 Find Opportunities
               </Link>
 
-              <Link to="/rec-sign-up" className="text-gray-700 hover:text-customGreen px-3 py-2 rounded-md text-sm font-medium">
+              <Link to="/recruitVolunteers" className="text-gray-700 hover:text-customGreen px-3 py-2 rounded-md text-sm font-medium">
                 Recruit Volunteers
               </Link>
 
@@ -32,11 +53,19 @@ const Navbar = () => {
                 About
               </Link>
               
-              <button className='bg-green-500 hover:bg-green-700 p-3 shadow-md hover:shadow-lg transition-shadow duration-300'>
+              { !currentUser ? (
+                <button className='bg-green-500 hover:bg-green-700 p-3 shadow-md hover:shadow-lg transition-shadow duration-300'>
                 <Link to="/sign-in" className="text-white hover:text-gray-200 px-3 py-2 rounded-md text-sm font-medium">
                   Sign In
                 </Link>
               </button>
+              ) : (
+                <Link to={link}>
+                  <Avatar rounded/>
+                </Link>
+              )
+            }
+
             </div>
           </div>
           
@@ -75,14 +104,19 @@ const Navbar = () => {
             <Link to="/about" className="text-gray-700 hover:text-customGreen block px-3 py-2 rounded-md text-base font-medium">
               About
             </Link>
-            <Link to="/sign-in" className="text-gray-700 hover:text-customGreen block px-3 py-2 rounded-md text-base font-medium">
+            { !currentUser ? (
+              <Link to="/sign-in" className="text-gray-700 hover:text-customGreen block px-3 py-2 rounded-md text-base font-medium">
               Sign In
             </Link>
+            ) : (
+              <Link to={link}>
+                <Avatar rounded/>
+              </Link>
+            )
+          }
           </div>
         </div>
       )}
     </nav>
   );
 };
-
-export default Navbar;

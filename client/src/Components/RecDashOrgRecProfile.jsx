@@ -1,6 +1,6 @@
-import { Alert, Button, Label, Modal, Select, Textarea, TextInput } from 'flowbite-react'
-import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'
+import { Alert, Button, Label, Modal, Textarea, TextInput } from 'flowbite-react'
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
 import { signOut } from '../Redux/user/userSlice';
 import { persistor } from '../Redux/store.js'
@@ -23,6 +23,7 @@ export default function RecDashOrgRecProfile() {
   const [orgDetailsPresent, setOrgDetailsPresent] = useState(false);
   const [organizations, setOrganizations] = useState([]);
   const [roleWithinOrg, setRoleWithinOrg] = useState('');
+
 
   const handleProfileChange = (e) => {
     setProfileForm({ ...profileForm, [e.target.id]: e.target.value });
@@ -77,6 +78,10 @@ export default function RecDashOrgRecProfile() {
     setActivitySuccess(null);
     if (Object.keys(profileForm).length === 0) {  //to check uf profileData object is empty
       setactivityError('No changes made');
+      return;
+    }
+    if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileForm.email))){
+      setactivityError('Invalid email address');
       return;
     }
     try {
@@ -140,57 +145,61 @@ export default function RecDashOrgRecProfile() {
 
   const handleCreateOrg = async (e) => {
     e.preventDefault();
-    if (Object.keys(orgForm).length === 0) {
-      setactivityError('Organization form is empty');
-      return;
-    }
-    try {
-      const res = await fetch(`/api/recruiter/organization/${currentUser.user._id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orgForm),
-      });
-      const data = await res.json();
-      console.log(data);
-      if (!res.ok) {
-        setactivityError(data.error || 'Error when creating organization')
-      } else {
-        setActivitySuccess("Organization details saved successfully");
+      if (Object.keys(orgForm).length === 0) {
+        setactivityError('All fields are required');
+        return;
       }
-    } catch (error) {
-      setactivityError(data.error);
-    } finally {
-      clearMessages();
+      if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(orgForm.email))){
+        setactivityError('Invalid company email address');
+        return;
+      }
+      try {
+        const res = await fetch(`/api/recruiter/organization/${currentUser.user._id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(orgForm),
+        });
+        const data = await res.json();
+        console.log(data);
+        if (!res.ok) {
+          setactivityError(data.error || 'Error when creating organization')
+        } else {
+          setActivitySuccess("Organization details saved successfully");
+        }
+      } catch (error) {
+        setactivityError(error.message);
+      } finally {
+        clearMessages();
+      }
     }
-  }
 
   const handleUpdateOrg = async (e) => {
     e.preventDefault();
-    if (Object.keys(orgForm).length === 0) {
-      setactivityError('No changes made');
-      return;
-    }
-    try {
-      const res = await fetch(`/api/recruiter/organization/${currentUser.user._id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orgForm),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setactivityError('Organization details update failed');
-      } else {
-        setActivitySuccess('Organization details update successful')
+      if (Object.keys(orgForm).length === 0) {
+        setactivityError('No changes made');
+        return;
       }
-    } catch (error) {
-      setactivityError(error);
-    } finally {
-      clearMessages();
-    }
+      try {
+        const res = await fetch(`/api/recruiter/organization/${currentUser.user._id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(orgForm),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setactivityError('Organization details update failed');
+        } else {
+          setActivitySuccess('Organization details update successful')
+        }
+      } catch (error) {
+        setactivityError(error);
+      } finally {
+        clearMessages();
+      }
   }
 
   const handleRecruiterDelete = async (e) => {
@@ -230,6 +239,7 @@ export default function RecDashOrgRecProfile() {
     }, 3000)
   }
 
+
   return (
     <div className='min-w-80vw mx-auto p-3 '>
       <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
@@ -239,21 +249,23 @@ export default function RecDashOrgRecProfile() {
             <div className='sm:flex justify-between mb-5 gap-5'>
               <div>
                 <Label value='First name' />
-                <TextInput type='text' id='fname' defaultValue={fetchedDetails.firstName} onChange={handleProfileChange} />
+                <TextInput type='text' id='fname' required defaultValue={fetchedDetails.firstName} onChange={handleProfileChange} />
               </div>
               <div>
                 <Label value='Last name' />
-                <TextInput type='text' id='lname' defaultValue={fetchedDetails.lastName} onChange={handleProfileChange} />
+                <TextInput type='text' id='lname' required defaultValue={fetchedDetails.lastName} onChange={handleProfileChange} />
               </div>
             </div>
             <div className='sm:flex justify-between mb-5'>
               <div className=''>
                 <Label value='Email' />
-                <TextInput type='email' id='email' defaultValue={fetchedDetails.email} onChange={handleProfileChange} />
+                <TextInput type='email' id='email' required defaultValue={fetchedDetails.email} onChange={handleProfileChange} />
               </div>
               <div className=''>
+
                 <Label value='Set new Password' />
-                <TextInput type='password' id='password' placeholder='Enter a new password' onChange={handleProfileChange} />
+                <TextInput type='password' id='password' required placeholder='Enter a new password' onChange={handleProfileChange} />
+
               </div>
             </div>
             <Button type='submit' className='bg-green-500 block mx-auto' onClick={handleUpdateProfile}>Update profile</Button>
@@ -278,11 +290,11 @@ export default function RecDashOrgRecProfile() {
             <div className='sm:flex justify-between gap-5 '>
               <div className='mb-5'>
                 <Label value='Organization Name' />
-                <TextInput type='text' id='name' defaultValue={organizationDetails.name} onChange={handleOrgChange} />
+                <TextInput type='text' id='name' required defaultValue={organizationDetails.name} onChange={handleOrgChange} />
               </div>
               <div>
                 <Label value='Role Within the Organization' />
-                <TextInput type='text' id='roleWithinOrganization' defaultValue={organizationDetails.roleWithinOrganization} onChange={handleOrgChange} />
+                <TextInput type='text' id='roleWithinOrganization' required defaultValue={organizationDetails.roleWithinOrganization} onChange={handleOrgChange} />
               </div>
             </div>
             <div className='sm:flex justify-between gap-5 '>
@@ -297,7 +309,7 @@ export default function RecDashOrgRecProfile() {
             </div>
             <div className='mb-5'>
               <Label value='Email' />
-              <TextInput type='text' id='email' defaultValue={organizationDetails.email} onChange={handleOrgChange} />
+              <TextInput type='text' required id='email' defaultValue={organizationDetails.email} onChange={handleOrgChange} />
             </div>
             <div className='sm:flex justify-between gap-5 '>
               <div className='mb-5'>
@@ -306,7 +318,7 @@ export default function RecDashOrgRecProfile() {
               </div>
               <div>
                 <Label value='Country' />
-                <TextInput type='text' id='country' defaultValue={organizationDetails.country} onChange={handleOrgChange} />
+                <TextInput type='text' required id='country' defaultValue={organizationDetails.country} onChange={handleOrgChange} />
               </div>
             </div>
             <div className='mb-5'>
@@ -315,7 +327,7 @@ export default function RecDashOrgRecProfile() {
             </div>
             <div className='mb-5'>
               <Label value='Organization Description' />
-              <Textarea id='description' rows={4} defaultValue={organizationDetails.description} onChange={handleOrgChange} />
+              <Textarea id='description' required rows={4} defaultValue={organizationDetails.description} onChange={handleOrgChange} />
             </div>
             {orgDetailsPresent && (<Button type='submit' className='bg-green-500 mt-5 block mx-auto' onClick={handleUpdateOrg}>Update organization</Button>)}
             {!orgDetailsPresent && (<Button type='submit' className='bg-green-500 mt-5 block mx-auto' onClick={handleCreateOrg}>Save organization</Button>)}

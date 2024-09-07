@@ -11,6 +11,9 @@ import RecSignUp from './Pages/RecSignUp';
 import VolDashboard from './Pages/VolDashboard';
 import RecDashboard from './Pages/RecDashboard';
 import AdminDashboard from './Pages/AdminDashboard';
+import About from './Pages/About';
+import RecruitVolunteers from './Pages/RecruitVolunteers';
+import FindOpportunities from './Pages/FindOpportunities';
 
 export default function App() {
   return (
@@ -42,6 +45,9 @@ function AppContent() {
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/vol-sign-up" element={<VolSignUp />} />
         <Route path="/rec-sign-up" element={<RecSignUp />} />
+        <Route path="/about" element={<About/>} />
+        <Route path="/recruitVolunteers" element={<RecruitVolunteers/>} />
+        <Route path="/findOpportunities" element={<FindOpportunities/>} />
         <Route element={<VolPrivateRoute />} >
           <Route path="/volunteer" element={<VolDashboard />} />
         </Route>

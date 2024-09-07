@@ -30,7 +30,6 @@ export default function RecDashIndRecProfile() {
     const handleIndependantChange = (e) => {
       setIndependentForm({...independentForm, [e.target.id]: e.target.value})
     }
-    //console.log(independentForm)
 
     const handleUpdateRecruiter = async (e) => {
       e.preventDefault();
@@ -38,6 +37,14 @@ export default function RecDashIndRecProfile() {
       setActivitySuccess(null);
       if(Object.keys(completeProfile).length === 0){  //to check uf profileData object is empty
         setactivityError('No changes made');
+        return;
+      }
+      if(profileForm.email && !(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileForm.email))){ 
+        setactivityError('Invalid email');
+        return
+      }
+      if(independentForm.phoneNo && !(/^[0-9]+$/.test(independentForm.phoneNo))){ 
+        setactivityError('Invalid contact format');
         return;
       }
       try {
@@ -60,14 +67,19 @@ export default function RecDashIndRecProfile() {
         }
       } catch (error) {
         // dispatch(updateFailure(error.message));
-        setactivityError(data.error);
+        setactivityError(error.message);
       }
     }
 
     const handleSaveIndRecDetails = async (e) => {
       e.preventDefault();
-      if(Object.keys(independentForm).length === 0){ 
-        setactivityError('Such empty :(');
+      setActivitySuccess(null);
+      if(Object.keys(independentForm).length === 0){  //to check uf profileData object is empty
+        setactivityError('No changes made');
+        return;
+      }
+      if(independentForm.phoneNo && !(/^[0-9]+$/.test(independentForm.phoneNo))){ 
+        setactivityError('Invalid contact format');
         return;
       }
       try {
@@ -78,8 +90,6 @@ export default function RecDashIndRecProfile() {
           },
           body: JSON.stringify(independentForm),
         });
-        const data = await res.json();
-        console.log(data);
         if(!res.ok){
           setactivityError('Error when saving independent recruiter details')
         }else{
@@ -97,7 +107,6 @@ export default function RecDashIndRecProfile() {
           const data = await res.json();
           if(res.ok){
             setFetchedDetails(data)
-            console.log(fetchedDetails)
           }
         } catch (error) {
           console.log(error);
@@ -137,71 +146,82 @@ export default function RecDashIndRecProfile() {
     }
 
     return (
-    <div className='max-w-lg mx-auto p-3 w-full'>
+    <div className='max-w-2xl mx-auto p-3 w-full'>
         <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
-        <form className='flex flex-col border border-gray-500 rounded-2xl p-4'>
-          <div>
-            <div className='sm:flex justify-between mb-5'>
-              <div>
-                <Label value='First name'/>
-                <TextInput type='text' id='fname' defaultValue={fetchedDetails.firstName} onChange={handleProfileChange}/>
+        <form>
+          <div className='max-w-2xl flex flex-grow flex-col'>
+            <div className='border border-gray-500 rounded-2xl p-4 mb-3'>
+              <div className='sm:flex justify-between mb-5 gap-10'>
+                <div className='flex-grow'>
+                  <Label value='First name'/>
+                  <TextInput type='text' id='fname' defaultValue={fetchedDetails.firstName} onChange={handleProfileChange}/>
+                </div>
+                <div className='flex-grow'>
+                  <Label value='Last name'/>
+                  <TextInput type='text' id='lname' defaultValue={fetchedDetails.lastName} onChange={handleProfileChange}/>
+                </div>
               </div>
-              <div>
-                <Label value='Last name'/>
-                <TextInput type='text' id='lname' defaultValue={fetchedDetails.lastName} onChange={handleProfileChange}/>
+              <div className='sm:flex justify-between mb-5 gap-10'>
+                <div className='flex-grow'>
+                  <Label value='Email'/>
+                  <TextInput type='email' id='email' defaultValue={fetchedDetails.email} onChange={handleProfileChange}/>
+                </div>
+                <div className='flex-grow'>
+                  <Label value='Set New Password'/>
+                  <TextInput type='password' id='password' placeholder='Enter a new password' onChange={handleProfileChange}/>  
+                </div> 
               </div>
             </div>
-            <div className='sm:flex justify-between mb-5'>
-              <div>
-                <Label value='City'/>
-                <TextInput type='text' id='city' defaultValue={fetchedDetails.city} onChange={handleIndependantChange}/>
+            <div className='border border-gray-500 rounded-2xl p-4 '>
+            <div className='sm:flex justify-between mb-5 gap-10'>
+                <div className='flex-grow'>
+                  <Label value='LinkedIn Profile'/>
+                  <TextInput type='text' id='linkedInProfile' defaultValue={fetchedDetails.linkedInProfile} onChange={handleIndependantChange}/>
+                </div>
+                <div className='flex-grow'>
+                  <Label value='Personal Website'/>
+                  <TextInput type='text' id='website' defaultValue={fetchedDetails.website} onChange={handleIndependantChange}/>
+                </div>
               </div>
-              <div>
-                <Label value='Country'/>
-                <TextInput type='text' id='country' defaultValue={fetchedDetails.country} onChange={handleIndependantChange}/>
+              <div className='sm:flex justify-between mb-5 gap-10'>
+                <div className='flex-grow'>
+                  <Label value='Contact'/>
+                  <TextInput type='text' id='phoneNo' defaultValue={fetchedDetails.phoneNo} onChange={handleIndependantChange}/>
+                </div>
+                <div className='flex-grow'>
+                  <Label value='NIC'/>
+                  <TextInput type='text' id='nicNo' defaultValue={fetchedDetails.nicNo} onChange={handleIndependantChange}/>
+                </div>
               </div>
-            </div>
-            <div>
+              <div className='sm:flex justify-between mb-5 gap-10'>
+                <div className='flex-grow'>
+                  <Label value='Country'/>
+                  <TextInput type='text' id='country' defaultValue={fetchedDetails.country} onChange={handleIndependantChange}/>
+                </div>
+                <div className='flex-grow'>
+                  <Label value='City'/>
+                  <TextInput type='text' id='city' defaultValue={fetchedDetails.city} onChange={handleIndependantChange}/>
+                </div>
+              </div>
+              <div className='mb-5'>
                 <Label value='Address'/>
                 <Textarea id='address' defaultValue={fetchedDetails.address} onChange={handleIndependantChange}/>
               </div>
-            <div>
-                <Label value='Contact'/>
-                <TextInput type='text' id='phoneNo' defaultValue={fetchedDetails.phoneNo} onChange={handleIndependantChange}/>
+              <div className='mb-5'>
+                <Label value='Bio'/>
+                <Textarea id='bio' defaultValue={fetchedDetails.bio} onChange={handleIndependantChange} placeholder='Tell us About your self!'/>
               </div>
-              <div>
-                <Label value='NIC'/>
-                <TextInput type='text' id='nicNo' defaultValue={fetchedDetails.nicNo} onChange={handleIndependantChange}/>
+              <div className='mb-5'>
+                <Label value='Services'/>
+                <Textarea id='services' defaultValue={fetchedDetails.services} onChange={handleIndependantChange} placeholder='Tell us About your past Volunteering Projects!'/>
               </div>
-            <div className='mb-5'>
-              <Label value='Bio'/>
-              <Textarea id='bio' defaultValue={fetchedDetails.bio} onChange={handleIndependantChange} placeholder='Tell us About your self!'/>
             </div>
-            <div className='mb-5'>
-              <Label value='LinkedIn Profile'/>
-              <TextInput type='text' id='linkedInProfile' defaultValue={fetchedDetails.linkedInProfile} onChange={handleIndependantChange}/>
-            </div>
-            <div className='mb-5'>
-              <Label value='Personal Website'/>
-              <TextInput type='text' id='website' defaultValue={fetchedDetails.website} onChange={handleIndependantChange}/>
-            </div>
-            <div className='mb-5'>
-              <Label value='Services'/>
-              <Textarea id='services' defaultValue={fetchedDetails.services} onChange={handleIndependantChange} placeholder='Tell us About your past Volunteering Projects!'/>
-            </div>
-            <div className='mb-5'>
-              <Label value='Email'/>
-              <TextInput type='email' id='email' defaultValue={fetchedDetails.email} onChange={handleProfileChange}/>
-            </div>
-            <div className='mb-5'>
-              <Label value='Set new Password'/>
-              <TextInput type='password' id='password' placeholder='Enter a new password' onChange={handleProfileChange}/>  
-            </div>  
-          </div>    
 
           {(!fetchedDetails.recruiterId) && <Button type='submit' className='bg-green-500 mt-7' onClick={handleSaveIndRecDetails}>Save Independent Recruiter Details</Button>}
           { ( !(!fetchedDetails.recruiterId) ) && <Button type='submit' className='bg-green-500 mt-7' onClick={handleUpdateRecruiter}>Update Profile</Button>  }
           
+          </div> 
+
         </form>
         <div className='text-red-500 flex justify-between mt-5'>
             <span onClick={()=>setShowModal(true)} className='cursor-pointer'>Delete Account</span>

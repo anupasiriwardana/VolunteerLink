@@ -16,7 +16,7 @@ const recruiterSchema = new Schema({
     },
     organizationOrIndependent: {
         type: String,
-        enum: ['Organization-representer', 'Independent'], // Radio button-like options
+        //enum: ['Organization-representer', 'Independent'], 
         required: true,
     },
     password : {
@@ -33,7 +33,7 @@ const independentRecruiterSchema = new Schema({
     },
     nicNo: {
         type: String,
-        required: true
+        required: false
     },
     phoneNo : {
         type : String,
@@ -45,11 +45,11 @@ const independentRecruiterSchema = new Schema({
     },
     city : {
         type : String,
-        required : true
+        required : false
     },
     address : {
         type : String,
-        required: true
+        required: false
     },
     linkedInProfile : {
         type: String,
@@ -59,13 +59,13 @@ const independentRecruiterSchema = new Schema({
         type: String,
         required : false
     },
-    bio : {
+    bio : { // <- skills & experience
         type: String,
         required: true
     },
     services : {
         type: String,
-        required: true
+        required: false
     }
 },{timestamps : true});
 

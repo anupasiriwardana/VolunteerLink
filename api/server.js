@@ -6,6 +6,8 @@ const app = express();
 //importing routes
 const recruiterRoutes = require('./routes/recruiterRoutes');
 const volunteerRoutes = require('./routes/volunteerRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const loginRoute = require('./routes/loginRoute');
 
 //middleware funcs
 app.use(express.json());
@@ -15,8 +17,10 @@ app.use((req,res,next) => {
 })
 
 //using imported routes
+app.use('/api',loginRoute);
 app.use('/api/recruiter', recruiterRoutes);
 app.use('/api/volunteer', volunteerRoutes);
+app.use('/api/admin', adminRoutes);
 
 //listen for requests
 //Connecting to DB

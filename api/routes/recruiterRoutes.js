@@ -10,34 +10,39 @@ const {
     updateOpportunity,
     getApplications,
     updateApplicationStatus,
-    deleteApplication,
+    //deleteApplication,
     getOrganization,
     createOrganization,
     updateOrganization,
     createRecruiter,
+    deleteRecruiter,
     saveIndependentRecruiterDetails,
     getRecruiter,
-    updateRecruiter
+    updateRecruiter,
+    getVolunteerProfile,
+    getOrganizations
 } = require('../controllers/recruiterController');
 
 //recruiter signup - CREATE recruiter
 router.post('/signup',createRecruiter);
 
+//DELETE recruiter
+router.delete('/profile/:id',deleteRecruiter);
+
 //POST personal details of independent recruiter
 router.post('/profile/:id',saveIndependentRecruiterDetails);
 
 //GET Personal details of recruiter (independent or organization-represnter)
-router.get('/profile',getRecruiter);
+router.get('/profile/:id',getRecruiter);
 
 //UPDATE Personal details of recruiter (independent or organization-representer)
 router.patch('/profile/:id',updateRecruiter);
-
 
 //POST/CREATE organization details
 router.post('/organization/:recruiterId',createOrganization);
 
 //GET organization details
-router.get('/organization',getOrganization);
+router.get('/organization/:recruiterId',getOrganization);
 
 //PATCH/UPDATE organization details
 router.patch('/organization/:recruiterId',updateOrganization);
@@ -47,30 +52,33 @@ router.patch('/organization/:recruiterId',updateOrganization);
 router.post('/opportunities/create/:recruiterId',createOpportunity);
 
 //GET all volunteering opportunities created by the recruiter
-router.get('/opportunities',getOpportunities);
+router.get('/opportunities/:recruiterId',getOpportunities);
 
 //GET a single volunteering opprotunity 
-router.get('/opportunities/:opportunityId',getOpportunity);
+router.get('/opportunity/:opportunityId',getOpportunity);
 
 //UPDATE a volunteering opportunity
 router.patch('/opportunities/:opportunityId',updateOpportunity);
 
 //DELETE a volunteering opportunity
-router.delete('/opportunities',deleteOpportunity);
+router.delete('/opportunities/:opportunityId',deleteOpportunity);
 
 
 //GET all volunteer applications
-router.get('/applications',getApplications);
+router.get('/applications/:recruiterId',getApplications);
 
 //UPDTAE/PATCH volunteer application
-router.patch('/applications/:id',updateApplicationStatus);
+router.patch('/applications/:applicationId',updateApplicationStatus);
 
 //DELETE a volunteer application
-router.delete('/applications/:id',deleteApplication);
+//router.delete('/applications/:id',deleteApplication);
 
 
 //GET a volunteer profile
-router.get('/applications/volunteer/:id');
+router.get('/applications/volunteerprofile/:applicationId',getVolunteerProfile);
+
+//get organizations
+router.get('/organizations',getOrganizations);
 
 
 

@@ -35,6 +35,7 @@ function AppContent() {
 
   // Check if the current route is a private route
   const isPrivateRoute = privateRoutes.some(route => location.pathname.startsWith(route));
+  const isAdminRoute = location.pathname.startsWith('/admin');
 
   return (
     <>
@@ -58,7 +59,7 @@ function AppContent() {
           <Route path="/admin" element={<AdminDashboard />} />
         </Route>
       </Routes>
-      <Footer />
+      {!isAdminRoute && <Footer />}
     </>
   );
 }

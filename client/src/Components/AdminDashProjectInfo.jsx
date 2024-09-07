@@ -22,7 +22,7 @@ export default function OpportunityProfile() {
           setError(data.error);
         } else {
           setOpportunity(data);
-          if(data.recruiterId){
+          if (data.recruiterId) {
             await fetchRecruiterData(data.recruiterId);
           }
         }
@@ -43,7 +43,7 @@ export default function OpportunityProfile() {
           setRecruiter(data.recruiter);
         }
       } catch (error) {
-        setError(data.error ||'Error: Could not fetch recruiter data');
+        setError(data.error || 'Error: Could not fetch recruiter data');
       }
     };
 
@@ -133,22 +133,24 @@ export default function OpportunityProfile() {
             <p><strong>Orientation & Training:</strong> {opportunity.orientationTraining}</p>
           )}
         </div>
-        <div className="flex justify-start">
-          <button
-            onClick={handleDelete}
-            className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
-          >
-            Delete Opportunity
-          </button>
-          {deleteStatus && <div className="text-red-500">{deleteStatus}</div>}
-        </div>
-        <div className="flex justify-end">
-          <button
-            onClick={handleGoBack}
-            className="mr-10 px-4 text-[#1aac83] hover:text-green-700 font-semibold"
-          >
-            &larr; Go Back
-          </button>
+        <div className='flex justify-between'>
+          <div className="flex justify-start">
+            <button
+              onClick={handleDelete}
+              className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+            >
+              Delete Opportunity
+            </button>
+            {deleteStatus && <div className="text-red-500">{deleteStatus}</div>}
+          </div>
+          <div className="flex justify-end">
+            <button
+              onClick={handleGoBack}
+              className="mr-10 px-4 text-[#1aac83] hover:text-green-700 font-semibold"
+            >
+              &larr; Go Back
+            </button>
+          </div>
         </div>
       </div>
       <div className="w-1/4 mb-6 pl-6 border-l border-gray-300">

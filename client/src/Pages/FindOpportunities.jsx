@@ -1,4 +1,3 @@
-import React from "react";
 import volunteerImage from "../assets/Volunteer.jpg";
 import { Link } from 'react-router-dom';
 
@@ -31,10 +30,10 @@ export default function FindOpportunities() {
             />
 
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <h2 className="text-3xl font-semibold text-black">
+              <h2 className="text-5xl font-bold text-white">
                 About Our Cause
               </h2>
-              <p className="text-black text-xl text-center px-6 mt-4">
+              <p className="text-white text-2xl text-center font-semibold px-6 mt-4">
                 We are dedicated to connecting individuals and organizations through volunteerism. Our mission is to create impactful volunteer opportunities that empower communities and bring positive change. Volunteers like you are crucial in helping us achieve our goals and positively impact our community.
               </p>
             </div>
@@ -72,15 +71,23 @@ export default function FindOpportunities() {
         </section>
       </main>
 
-      <div className='lg:px-64 m-10 text-center'>
-        {/* <Link to="/sign-up"> */}
-          <button className='bg-green-500 p-3 rounded text-white hover:bg-green-600'>
-            Sign Up as a Volunteer
-          </button>
-        {/* </Link> */}
-        <br /><br />
+      <div className=' m-10 text-center flex flex-col items-center justify-even flex-grow'>
+        
+        <div className="p-8 flex flex-row items-center jusify-around flex-grow gap-20 border border-gray-600">
+          <h1  className='font-karla text-3xl -mr-16'>Get Started On Your Journey</h1>
+          <div>
+            <Link to='/vol-sign-up'>
+              <button className='bg-green-500 p-3 rounded text-white hover:bg-green-600'>
+                Sign Up as a Volunteer
+              </button>
+            </Link>
+          </div>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+        <br /><br />
+        
+      
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 mt-10 mb-10 justify-around items-center border border-gray-600">
           <div className="p-4">
             <h1 className='font-karla text-3xl -mr-16'>
               Already on VolunteerLink?

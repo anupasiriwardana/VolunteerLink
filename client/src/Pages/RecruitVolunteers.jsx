@@ -31,14 +31,20 @@ export default function RecruitVolunteers(){
 
       {/* section three, sign up */}
       <div className='lg:px-64 m-10 text-center'>
-        {/* <Link to="/sign-up"> */}
-          <button className='bg-green-500 p-3 rounded text-white hover:bg-green-600'>
-            Sign Up as a Recruiter
-          </button>
-        {/* </Link> */}
+
+          <div className='border border-gray-600 p-8 gap-5 flex flex-row items-center justify-around flex-grow'>
+            <h1 className='font-karla text-3xl -mr-16'>Get Started On Your Journey</h1>
+            <div>
+              <Link to='/rec-sign-up'>
+                <button className='bg-green-500 p-3 rounded text-white hover:bg-green-600'>
+                  Sign Up as a Recruiter
+                </button>
+              </Link>
+            </div>
+          </div>
         <br/><br/>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 items-center border border-gray-600 mt-10 mb-10">
           <div className="p-4">
             <h1 className='font-karla text-3xl -mr-16'>
               Already on VolunteerLink?

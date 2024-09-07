@@ -54,7 +54,7 @@ export default function Home() {
             </div>
             <br/>
 
-            <Link to="/find-oppotunities">
+            <Link to="/findOpportunities">
               <button className='bg-green-600 hover:bg-green-700 p-3 rounded-md font-bold text-xl text-white'>
                 Get started as a volunteer
               </button>
@@ -115,7 +115,7 @@ export default function Home() {
             </div>
             <br/>
 
-            <Link to="/recruit-volunteers">
+            <Link to="/recruitVolunteers">
             <button className='bg-green-600 hover:bg-green-700 p-3 rounded-md font-bold text-xl text-white'>
               Get started as a recruiter
             </button>

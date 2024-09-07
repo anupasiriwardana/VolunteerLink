@@ -46,11 +46,11 @@ export default function VolDashAppliedProjects() {
   }, [volunteerId]);
 
   if (loading) {
-    return <div className="text-center text-lg text-[#1aac83]">Loading...</div>;
+    return <div className="text-center text-lg text-[#1aac83] m-auto">Loading...</div>;
   }
 
   if (error) {
-    return <p className="text-center text-lg text-red-500">{error}</p>;
+    return <p className="text-center text-lg text-red-500 mx-auto">{error}</p>;
   }
 
   return (

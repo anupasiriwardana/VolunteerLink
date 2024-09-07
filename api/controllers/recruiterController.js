@@ -48,7 +48,24 @@ const deleteRecruiter = async (req, res) => {
         if (!deletedRecruiter) {
             return res.status(404).json({ error: "Recruiter not found" });
         }
-        res.status(200).json(deletedRecruiter);
+        //deleting the projects created by recruiter
+        const projects = await Opportunity.deleteMany({ recruiterId : recruiterId });
+        
+        //checking if recruiter is organization or indepedent and deleteig relevnt recrod
+        if(deletedRecruiter.organizationOrIndependent == 'Independent'){
+            const deletedIndRecDetails = await IndependentRecruiter.findOneAndDelete({recruiterId : recruiterId});
+            res.status(200).json({deletedRecruiter,deletedIndRecDetails});
+        }else{//organizationn  representer -> deleting the organization represnter record
+            const orgRepresenter = await OrganizationRepresenter.findOneAndDelete({recruiterId : recruiterId});
+            //finding whether there exisits more representers for the same organizationn
+            const otherOrgRepresenters = await OrganizationRepresenter.find({organizationId : orgRepresenter.organizationId});
+            //delete the organization if there's no any other repseresnet
+            if(otherOrgRepresenters.length == 0){
+                const deletedOrg = await Organization.findByIdAndDelete(orgRepresenter.organizationId);
+                return res.status(200).json({deletedRecruiter,orgRepresenter,deletedOrg});
+            }
+            return res.status(200).json({deletedRecruiter,orgRepresenter});
+        }
     } catch (error) {
         res.status(500).json({ error: "Server Error: Could not delete recruiter" });
     }

@@ -153,6 +153,10 @@ export default function RecDashOrgRecProfile() {
         setactivityError('Invalid company email address');
         return;
       }
+      if(!orgForm.roleWithinOrganization){
+        setactivityError('Please set your role within the organization');
+        return;
+      }
       try {
         const res = await fetch(`/api/recruiter/organization/${currentUser.user._id}`, {
           method: 'POST',

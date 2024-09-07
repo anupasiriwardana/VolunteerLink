@@ -24,7 +24,7 @@ const userLogin = async (req, res) => {
                 return res.status(200).json({ 
                     message: "Login successful", 
                     userType,
-                    user 
+                    user: { _id: user._id } //pasing only id
                 });
             } else {
                 return res.status(400).json({ error: "Invalid password" });
@@ -46,7 +46,7 @@ const userLogin = async (req, res) => {
                 return res.status(200).json({ 
                     message: "Login successful", 
                     userType,
-                    user 
+                    user: { _id: user._id }
                 });
             } else {
                 return res.status(400).json({ error: "Invalid password" });
@@ -63,7 +63,7 @@ const userLogin = async (req, res) => {
                 return res.status(200).json({ 
                     message: "Login successful", 
                     userType,
-                    user 
+                    user: { _id: user._id }
                 });
             } else {
                 return res.status(400).json({ error: "Invalid password" });

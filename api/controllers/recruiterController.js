@@ -115,10 +115,8 @@ const getRecruiter = async (req, res) => {
             //     return res.status(404).json({ error: "Recruiter details not found" }); <- anupa's
             // }
             //const mergedObject = Object.assign({}, recruiterDetails, independentRecruiterDetails);
-            
             return res.status(200).json({...recruiterObj , ...indObj});
         } else {
-            console.log(recruiterDetails)
             return res.status(200).json(recruiterDetails);
         }
     } catch (error) {

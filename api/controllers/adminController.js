@@ -5,6 +5,7 @@ const Opportunity = require('../models/opportunityModel');
 const Organization = require('../models/organizationModel');
 const { Recruiter, IndependentRecruiter, OrganizationRepresenter } = require('../models/recruiterUserModel');
 const { Volunteer, VolunteerDetails} = require('../models/volunteerUserModel');
+const { hashPassword } = require('./passwordHandler');
 
 //POST / create recruiter-> recruiter signup
 const createAdmin = async (req, res) => {
@@ -23,9 +24,11 @@ const createAdmin = async (req, res) => {
             return res.status(400).json({ error: "Email is already in use" });
         }
 
+        const hashedPassword = await hashPassword(password); //using the impoted func to hash pswd
+
         const newAdmin = await Admin.create({
             email,
-            password
+            password : hashedPassword
         });
         res.status(201).json(newAdmin); 
     } catch (error) {
@@ -75,8 +78,9 @@ const updateAdmin = async (req, res) => {
         if (email) {
             updateFields.email = email;
         }
-        if (password) {
-            updateFields.password = password; 
+        if (password && password!='') {
+            const hashedPassword = await hashPassword(password); //using the impoted func to hash pswd
+            updateFields.password = hashedPassword; 
         }
 
         const updatedAdmin = await Admin.findByIdAndUpdate(
@@ -110,13 +114,15 @@ const createRecruiter = async (req, res) => {
         if (existingRecruiter || existingAdmin || existingVolunteer) {
             return res.status(400).json({ error: "Email is already in use" });
         }
+        //hashing the password
+        const hashedPassword = await hashPassword(password); //using the impoted func to hash pswd
 
         const newRecruiter = await Recruiter.create({
             firstName,
             lastName,
             email,
             organizationOrIndependent,
-            password,
+            password : hashedPassword,
         });
         res.status(201).json(newRecruiter);
     } catch (error) {
@@ -191,9 +197,9 @@ const updateRecruiter = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const updateFields = {}; //to store the fields and values to be updated
+        const updateFields = {}; 
         if(email){
-            //checking if the updated email is already used by anothr recruiter, volunter, or admin
+            //checking if the updated email is already used by anothr recruiter, volunter ,admin
             const existingRecruiter = await Recruiter.findOne({ email });
             const existingAdmin = await Admin.findOne({email});
             const existingVolunteer = await Volunteer.findOne({email});
@@ -203,7 +209,11 @@ const updateRecruiter = async (req, res) => {
             }
             updateFields.email = email;
         }
-        if(password) updateFields.password = password; //if passsword is present
+        if(password){
+            //hasing paswd
+            const hashedPassword = await hashPassword(password); //using the impoted func to hash pswd
+            updateFields.password = hashedPassword;
+        }
 
         const updatedRecruiter = await Recruiter.findByIdAndUpdate(
             recruiterId,
@@ -267,12 +277,15 @@ const createVolunteer = async (req, res) => {
             return res.status(400).json({ error: "Email is already in use" });
         }
 
+        //hashing passwd
+        const hashedPassword = await hashPassword(password); //using the impoted func to hash pswd
+
         const newVolunteer = await Volunteer.create({
             firstName,
             lastName,
             email,
             organizationOrIndependent,
-            password,
+            password : hashedPassword,
         });
         res.status(201).json(newVolunteer);
     } catch (error) {
@@ -319,9 +332,9 @@ const updateVolunteer = async (req, res) => {
     const { email, password } = req.body;
 
     try{
-        const updateFields = {}; //to store the fields and values to be updated
+        const updateFields = {};  //to store fields to be upated
         if(email){
-            //checking if the updated email is already used by anothr recruiter, volunter, or admin
+            //checking if the updated email is already used by anothr recruiter, volunter, admin
             const existingRecruiter = await Recruiter.findOne({ email });
             const existingAdmin = await Admin.findOne({email});
             const existingVolunteer = await Volunteer.findOne({email});
@@ -331,7 +344,11 @@ const updateVolunteer = async (req, res) => {
             }
             updateFields.email = email;
         }
-        if(password) updateFields.password = password; //if passsword is present
+        if(password){
+            //hashing pswd
+            const hashedPassword = await hashPassword(password); //using the impoted func to hash pswd
+            updateFields.password = hashedPassword;
+        }
 
         const updatedVolunteer = await Volunteer.findByIdAndUpdate(
             volunteerId,

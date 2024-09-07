@@ -42,8 +42,11 @@ export default function AdminDashRecruiters() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormError(null);
-    setFormSuccess(null);
+    if( !newRecruiter.firstName || !newRecruiter.lastName || !newRecruiter.organizationOrIndependent || !newRecruiter.password){
+      setFormError("Please fill out all the fields");
+      clearMessages();
+      return;
+    }
 
     try {
       const response = await fetch('/api/admin/users/recruiters', {
@@ -133,7 +136,6 @@ export default function AdminDashRecruiters() {
               value={newRecruiter.firstName}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border rounded-lg"
-              required
             />
           </div>
           <div className="mb-4">
@@ -145,7 +147,6 @@ export default function AdminDashRecruiters() {
               value={newRecruiter.lastName}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border rounded-lg"
-              required
             />
           </div>
           <div className="mb-4">
@@ -157,7 +158,6 @@ export default function AdminDashRecruiters() {
               value={newRecruiter.email}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border rounded-lg"
-              required
             />
           </div>
           <div className="mb-4">
@@ -168,7 +168,6 @@ export default function AdminDashRecruiters() {
               value={newRecruiter.organizationOrIndependent}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border rounded-lg"
-              required
             >
               <option value="">Select Type</option>
               <option value="Organization-representer">Organization Representer</option>
@@ -184,7 +183,6 @@ export default function AdminDashRecruiters() {
               value={newRecruiter.password}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border rounded-lg"
-              required
             />
           </div>
           <button type="submit" className="w-full bg-[#1aac83] text-white py-2 px-4 rounded-lg hover:bg-[#169c73]">

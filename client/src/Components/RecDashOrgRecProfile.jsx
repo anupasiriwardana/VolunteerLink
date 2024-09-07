@@ -252,8 +252,8 @@ export default function RecDashOrgRecProfile() {
                 <TextInput type='email' id='email' defaultValue={fetchedDetails.email} onChange={handleProfileChange} />
               </div>
               <div className=''>
-                <Label value='Password' />
-                <TextInput type='password' id='password' defaultValue={fetchedDetails.password} onChange={handleProfileChange} />
+                <Label value='Set new Password' />
+                <TextInput type='password' id='password' placeholder='Enter a new password' onChange={handleProfileChange} />
               </div>
             </div>
             <Button type='submit' className='bg-green-500 block mx-auto' onClick={handleUpdateProfile}>Update profile</Button>

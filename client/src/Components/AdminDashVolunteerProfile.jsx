@@ -210,6 +210,7 @@ export default function VolunteerProfile() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#1aac83]"
+              placeholder='Enter new password'
             />
           </div>
           <button

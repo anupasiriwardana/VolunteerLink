@@ -54,9 +54,12 @@ export default function Home() {
             </div>
             <br/>
 
-            <button className='bg-green-600 hover:bg-green-700 p-3 rounded-md font-bold text-xl text-white'>
-              Get started as a volunteer
-            </button>
+            <Link to="/find-oppotunities">
+              <button className='bg-green-600 hover:bg-green-700 p-3 rounded-md font-bold text-xl text-white'>
+                Get started as a volunteer
+              </button>
+            </Link>
+            
           </div>
         </div>
 
@@ -112,9 +115,12 @@ export default function Home() {
             </div>
             <br/>
 
+            <Link to="/recruit-volunteers">
             <button className='bg-green-600 hover:bg-green-700 p-3 rounded-md font-bold text-xl text-white'>
               Get started as a recruiter
             </button>
+            </Link>
+            
           </div>
 
 

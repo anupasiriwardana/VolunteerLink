@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="footer-container  text-white py-10 font-karla"
         style={{
-            backgroundImage: "linear-gradient(45deg, rgb(2, 48, 32), rgb(0, 0, 0), rgb(2, 48, 32))",
+            backgroundImage: "linear-gradient(45deg, rgb(0, 0, 0), rgb(2, 48, 32), rgb(2, 48, 32))",
         color: "azure",
         }}
     >
@@ -49,7 +49,7 @@ const Footer = () => {
             <h5 className="font-bold mb-3">Start Now</h5>
             <ul className="space-y-2">
               <li>
-                <Link to="/find-opportunities" className="hover:text-gray-300">
+                <Link to="/find-oppotunities" className="hover:text-gray-300">
                   Find Oppotunities
                 </Link>
               </li>

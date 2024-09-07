@@ -2,7 +2,7 @@ import React from 'react'
 import recruitvol_1 from '../assets/recruitvol_1.jpg'
 import { Link } from 'react-router-dom'
 
-export default function RecruitVolunteers() {
+export default function RecruitVolunteers(){
   return (
     <div className='font-karla'>
       {/* section one, header */}

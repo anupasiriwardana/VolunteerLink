@@ -39,8 +39,11 @@ export default function AdminDashVolunteers() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormError(null);
-    setFormSuccess(null);
+    if(!newVolunteer.firstName || !newVolunteer.lastName || !newVolunteer.email || !newVolunteer.password){
+      setFormError("Please fill out all the fields.");
+      clearMessages();
+      return;
+    }
 
     try {
       const response = await fetch('/api/admin/users/volunteers', {
@@ -127,7 +130,6 @@ export default function AdminDashVolunteers() {
               value={newVolunteer.firstName}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border rounded-lg"
-              required
             />
           </div>
           <div className="mb-4">
@@ -139,7 +141,7 @@ export default function AdminDashVolunteers() {
               value={newVolunteer.lastName}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border rounded-lg"
-              required
+              
             />
           </div>
           <div className="mb-4">
@@ -150,8 +152,7 @@ export default function AdminDashVolunteers() {
               name="email"
               value={newVolunteer.email}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border rounded-lg"
-              required
+              className="w-full px-3 py-2 border rounded-lg"      
             />
           </div>
           <div className="mb-4">
@@ -163,7 +164,6 @@ export default function AdminDashVolunteers() {
               value={newVolunteer.password}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border rounded-lg"
-              required
             />
           </div>
           <button type="submit" className="w-full bg-[#1aac83] text-white py-2 px-4 rounded-lg hover:bg-[#169c73]">

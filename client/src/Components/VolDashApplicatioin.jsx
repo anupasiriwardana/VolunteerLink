@@ -109,7 +109,7 @@ export default function ApplicationProfile() {
   }
 
   if (loading) {
-    return <p className="flex justify-center text-center text-lg text-[#1aac83]">Loading...</p>;
+    return <p className="flex justify-center text-center text-lg text-[#1aac83] m-auto">Loading...</p>;
   }
 
   return (

@@ -1,8 +1,9 @@
-import { Label, TextInput, Select, Textarea } from 'flowbite-react';
+import { Label, TextInput, Select, Modal, Textarea, Button } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import useSignOut from '../hooks/useSignOutHook';
 import { useNavigate } from 'react-router-dom';
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 export default function VolunteerProfile() {
   const [volunteerData, setVolunteerData] = useState({
@@ -33,6 +34,7 @@ export default function VolunteerProfile() {
   const [form2Error, setForm2Error] = useState(null);
   const signOut = useSignOut(); //after profile deletion
   const navigate = useNavigate(); //to redirect after profile deletion
+  const [showModal, setShowModal] = useState(false);
 
   const { currentUser } = useSelector(state => state.user);
 
@@ -48,8 +50,8 @@ export default function VolunteerProfile() {
           firstName: data.volunteer.firstName,
           lastName: data.volunteer.lastName,
           email: data.volunteer.email,
-          password: data.volunteer.password,
-          confirmPassword: data.volunteer.password
+          password: '',
+          confirmPassword: ''
         });
         if (data.volunteerDetails) {
           setVolunteerDetails({
@@ -122,8 +124,8 @@ export default function VolunteerProfile() {
       clearMessages();
       return;
     }
-    if (volunteerData.email && !volunteerData.password) {
-      setForm2Error("Error: A new password is required.");
+    if (!volunteerData.email || !volunteerData.firstName || !volunteerData.lastName) {
+      setForm2Error("First Name, Last Name, and Email fields can not be empty.");
       clearMessages();
       return;
     }
@@ -177,7 +179,7 @@ export default function VolunteerProfile() {
   };
 
   if (loading) {
-    return <p className="text-center text-lg text-[#1aac83]">Loading...</p>;
+    return <p className="text-center text-lg text-[#1aac83] m-auto">Loading...</p>;
   }
 
   return (
@@ -336,7 +338,6 @@ export default function VolunteerProfile() {
                 id="lastName"
                 value={volunteerData.lastName}
                 onChange={handleVolunteerChange}
-                placeholder="Phone Number"
                 className="text-[#333333]"
               />
             </div>
@@ -348,7 +349,6 @@ export default function VolunteerProfile() {
               id="email"
               value={volunteerData.email}
               onChange={handleVolunteerChange}
-              placeholder="Email"
               className="text-[#333333]"
             />
           </div>
@@ -381,7 +381,10 @@ export default function VolunteerProfile() {
               Update
             </button>
             <button
-              onClick={handleDelete}
+              onClick={(e) => {
+                e.preventDefault();
+                setShowModal(true);
+              }}
               className="text-white bg-red-500 hover:bg-red-600 rounded-md p-2"
             >
               Delete Account
@@ -391,6 +394,19 @@ export default function VolunteerProfile() {
           {form2Error && <p className="text-red-500 text-center mt-4">{form2Error}</p>}
         </form>
       </div>
+      <Modal show={showModal} popup size='md'>
+        <Modal.Header />
+        <Modal.Body>
+          <div className='text-center'>
+            <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 darl:text-gray-200 mb-4 mx-auto' />
+            <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>Are you sure you want to delete your account?</h3>
+            <div className='flex justify-center gap-4'>
+              <Button color='failure' onClick={handleDelete}>Yes, I'm sure</Button>
+              <Button color='gray' onClick={() => setShowModal(false)}>No, Cancel</Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }

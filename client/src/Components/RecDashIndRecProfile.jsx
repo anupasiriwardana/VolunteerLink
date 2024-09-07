@@ -167,8 +167,8 @@ export default function RecDashIndRecProfile() {
                   <TextInput type='email' id='email' defaultValue={fetchedDetails.email} onChange={handleProfileChange}/>
                 </div>
                 <div className='flex-grow'>
-                  <Label value='Password'/>
-                  <TextInput type='password' id='password' defaultValue={fetchedDetails.password} onChange={handleProfileChange}/>  
+                  <Label value='Set New Password'/>
+                  <TextInput type='password' id='password' placeholder='Enter a new password' onChange={handleProfileChange}/>  
                 </div> 
               </div>
             </div>

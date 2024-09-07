@@ -125,7 +125,7 @@ export default function OpportunityProfile() {
   }
 
   if (loading) {
-    return <p className="text-center text-lg text-[#1aac83]">Loading...</p>;
+    return <p className="text-center text-lg text-[#1aac83] m-auto">Loading...</p>;
   }
 
   return (

@@ -138,9 +138,9 @@ export default function RecDashOrgRecProfile() {
       }
     }
 
-    if (currentUser.user.organizationOrIndependent === 'Organization-representer') {
-      fetchRecDetails(); //Since async can't directly be used for useEffect(), we define a createPosts() function and call it inside the useEffect()
-    }
+    
+    fetchRecDetails(); //Since async can't directly be used for useEffect(), we define a createPosts() function and call it inside the useEffect()
+    
   }, [currentUser, activitySuccess]);
 
   const handleCreateOrg = async (e) => {

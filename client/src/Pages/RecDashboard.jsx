@@ -22,7 +22,6 @@ export default function Dashboard() {
   const [ orgRecDetailsExist, setOrgRecDetailsExist ] = useState(false);
   const navigate = useNavigate();
 
-  console.log(currentUser.userType)
   
   //evach time we come to this page, we get irs tab⬇️
   useEffect( ()=> {
@@ -41,11 +40,9 @@ export default function Dashboard() {
         const res = await fetch(`/api/recruiter/profile/${currentUser.user._id}`);
         const data = await res.json();
         if (res.ok) {
-          console.log(data._id);
           if(data.recruiterId){
             setIndRecDetailsExist(true);
           }
-          console.log('indRec: ',indRecDetailsExist);
         }
       } catch (error) {
         console.log(error);

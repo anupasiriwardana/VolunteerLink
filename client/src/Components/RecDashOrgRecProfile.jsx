@@ -185,6 +185,14 @@ export default function RecDashOrgRecProfile() {
         setactivityError('No changes made');
         return;
       }
+      if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(orgForm.email))){
+        setactivityError('Invalid company email address');
+        return;
+      }
+      if(orgForm.roleWithinOrganization === ''){
+        setactivityError('Please set your role within the organization');
+        return;
+      }
       try {
         const res = await fetch(`/api/recruiter/organization/${currentUser.user._id}`, {
           method: 'PATCH',

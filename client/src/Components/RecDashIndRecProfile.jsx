@@ -12,39 +12,95 @@ export default function RecDashIndRecProfile() {
 
     const [ showModal, setShowModal ] = useState(false);
     const { currentUser} = useSelector(state => state.user);
-    const [ profileForm, setProfileForm ] = useState({});
-    const [ independentForm, setIndependentForm ] = useState({});
     const [ fetchedDetails, setFetchedDetails ] = useState({});
+    const [profileForm, setProfileForm] = useState({});
+    const [independentForm, setIndependentForm] = useState({});
     const [ activitySuccess , setActivitySuccess ] = useState(null);
-    const [ activityError, setactivityError ] = useState(null);
+    const [ activityError, setactivityError ] = useState('No changes made');
     const completeProfile = { ...profileForm, ...independentForm };
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    // console.log(completeProfile)
+    const [ updateTry, setUpdateTry ] = useState(false);
 
-    // console.log(currentUser);
+    useEffect ( () => {
+      const fetchIndeRecDetails = async () => {
+        try {
+          const res = await fetch(`/api/recruiter/profile/${currentUser.user._id}`);
+          const data = await res.json();
+          if(res.ok){
+            setFetchedDetails(data)
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+     fetchIndeRecDetails();
+    }, [currentUser.user._id])
+
+    useEffect(() => {
+      if (Object.keys(fetchedDetails).length > 0) {
+          setProfileForm({
+              fname: fetchedDetails.firstName,
+              lname: fetchedDetails.lastName,
+              email: fetchedDetails.email,
+              password: ''
+          });
+          setIndependentForm({
+              linkedInProfile: fetchedDetails.linkedInProfile,
+              website: fetchedDetails.website,
+              phoneNo: fetchedDetails.phoneNo,
+              nicNo: fetchedDetails.nicNo,
+              country: fetchedDetails.country,
+              city: fetchedDetails.city,
+              address: fetchedDetails.address,
+              services: fetchedDetails.services
+          });
+      }
+    }, [fetchedDetails])
+
+    // console.log(profileForm,independentForm)
 
     const handleProfileChange = (e) => {
       setProfileForm({...profileForm, [e.target.id]: e.target.value})
+      setactivityError(null)
     }
     const handleIndependantChange = (e) => {
       setIndependentForm({...independentForm, [e.target.id]: e.target.value})
+      setactivityError(null)
     }
+    // Validation function for profileForm
+    const validateProfileForm = () => {
+      if (profileForm.fname === '' || profileForm.lname === '') {
+        setactivityError("First name and Last name are required.");
+        return false;
+      }
+      if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileForm.email))) {
+        setactivityError('Email is invalid');
+        return false;
+      }
+      return true;
+    };
+    // Validation function for independentForm
+    const validateIndependentForm = () => {
+      if (!/^[0-9]+$/.test(independentForm.phoneNo)) {
+        setactivityError("Contact number is invalid.");
+        return false;
+      }
+      // Add more checks here if needed for other fields
+      return true;
+    };
 
     const handleUpdateRecruiter = async (e) => {
       e.preventDefault();
-      setactivityError(null);
-      setActivitySuccess(null);
-      if(Object.keys(completeProfile).length === 0){  //to check uf profileData object is empty
-        setactivityError('No changes made');
+      setUpdateTry(true);
+      if(activityError){
+        setActivitySuccess(null);
         return;
       }
-      if(profileForm.email && !(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileForm.email))){ 
-        setactivityError('Invalid email');
-        return
+      if (!validateProfileForm()) {
+        return;
       }
-      if(independentForm.phoneNo && !(/^[0-9]+$/.test(independentForm.phoneNo))){ 
-        setactivityError('Invalid contact format');
+      if (!validateIndependentForm()) {
         return;
       }
       try {
@@ -57,16 +113,12 @@ export default function RecDashIndRecProfile() {
           body: JSON.stringify(completeProfile),
         });
         const data = await res.json();
-        console.log(data);
         if(!res.ok){
-          // dispatch(updateFailure(data.message));
           setactivityError(data.error);
         }else{
-          // dispatch(updateSuccess(data));
           setActivitySuccess("Profile Updated successfully");
         }
       } catch (error) {
-        // dispatch(updateFailure(error.message));
         setactivityError(error.message);
       }
     }
@@ -78,8 +130,7 @@ export default function RecDashIndRecProfile() {
         setactivityError('No changes made');
         return;
       }
-      if(independentForm.phoneNo && !(/^[0-9]+$/.test(independentForm.phoneNo))){ 
-        setactivityError('Invalid contact format');
+      if (!validateIndependentForm()) {
         return;
       }
       try {
@@ -100,21 +151,6 @@ export default function RecDashIndRecProfile() {
       }
     }
 
-    useEffect ( () => {
-      const fetchIndeRecDetails = async () => {
-        try {
-          const res = await fetch(`/api/recruiter/profile/${currentUser.user._id}`);
-          const data = await res.json();
-          if(res.ok){
-            setFetchedDetails(data)
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-     fetchIndeRecDetails();
-    }, [currentUser])
-
     const handleRecruiterDelete = async (e) => {
       e.preventDefault();
       dispatch(signOut());   // Clear Redux state
@@ -124,13 +160,11 @@ export default function RecDashIndRecProfile() {
         const res = await fetch(`/api/recruiter/profile/${currentUser.user._id}`, {
           method: 'DELETE',
         });
-        const data = await res.json();
         if(res.ok){
           setActivitySuccess("Profile Deleted successfully");
           navigate('/');
         }else{
           setactivityError('Error when deleting recruiter details')
-          console.log('Error when deleting recruiter details')
         }
       } catch (error) {
         setactivityError(error);
@@ -229,7 +263,7 @@ export default function RecDashIndRecProfile() {
         </div>
 
         { activitySuccess && (<Alert color='success' className='mt-5'>{activitySuccess}</Alert>) }
-        { activityError && (<Alert color='failure' className='mt-5'>{activityError}</Alert>) }
+        { updateTry && activityError && (<Alert color='failure' className='mt-5'>{activityError}</Alert>) }
 
         <Modal show={showModal} onClose={ ()=>setShowModal(false) } popup size='md'>
             <Modal.Header />

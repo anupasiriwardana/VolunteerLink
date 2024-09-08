@@ -93,7 +93,7 @@ export default function AdminDashVolunteers() {
       <div className="md:w-2/3 w-full">
         <h2 className="text-2xl font-bold mb-6 text-[#333333]">Volunteers</h2>
         
-        {volunteers && (
+        {volunteers.length > 0 ? (
           <table className="w-full table-auto bg-white rounded-lg shadow-md">
             <thead>
               <tr className="bg-[#1aac83] text-white">
@@ -116,6 +116,8 @@ export default function AdminDashVolunteers() {
               ))}
             </tbody>
           </table>
+        ): (
+          <p className="text-center text-lg text-[#333333]">No volunteers found.</p>
         )}
       </div>
       <div className="md:w-1/3 w-full md:ml-6 mt-6 md:mt-0">

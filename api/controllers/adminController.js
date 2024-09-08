@@ -248,16 +248,20 @@ const deleteRecruiter = async (req, res) => {
             res.status(200).json({deletedRecruiter,deletedIndRecDetails});
         }else{//organizationn  representer -> deleting the organization represnter record
             const orgRepresenter = await OrganizationRepresenter.findOneAndDelete({recruiterId : recruiterId});
-            //finding whether there exisits more representers for the same organizationn
-            const otherOrgRepresenters = await OrganizationRepresenter.find({organizationId : orgRepresenter.organizationId});
-            //delete the organization if there's no any other repseresnet
-            if(otherOrgRepresenters.length == 0){
-                const deletedOrg = await Organization.findByIdAndDelete(orgRepresenter.organizationId);
-                return res.status(200).json({deletedRecruiter,orgRepresenter,deletedOrg});
+            
+            if(orgRepresenter){
+                //finding whether there exisits more representers for the same organizationn
+                const otherOrgRepresenters = await OrganizationRepresenter.find({organizationId : orgRepresenter.organizationId});
+                //delete the organization if there's no any other repseresnet
+                if(otherOrgRepresenters.length == 0){
+                    const deletedOrg = await Organization.findByIdAndDelete(orgRepresenter.organizationId);
+                    return res.status(200).json({deletedRecruiter,orgRepresenter,deletedOrg});
+                }
             }
             return res.status(200).json({deletedRecruiter,orgRepresenter});
         }
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Server Error: Could not delete recruiter" });
     }
 };

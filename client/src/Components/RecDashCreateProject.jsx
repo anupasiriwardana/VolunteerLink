@@ -17,7 +17,7 @@ export default function CreateOpportunity() {
     const [formError, setFormError] = useState(null);
     const [formSuccess, setFormSuccess] = useState(null);
     const navigate = useNavigate();
-    const {currentUser} = useSelector(state => state.user);
+    const { currentUser } = useSelector(state => state.user);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -44,32 +44,32 @@ export default function CreateOpportunity() {
             });
             const data = await response.json();
             if (!response.ok) {
-              setFormError(data.error);
-            }else{
-              setFormSuccess('Volunteering Project created successfully');
-              setTitle('');
-              setDescription('');
-              setCategories('');
-              setSkillsRequired('');
-              setVirtualOrInPerson('Virtual');
-              setLocation('');
-              setStartDate('');
-              setEndDate('');
-              setApplicationDeadline('');
-              setOrientationTraining('');
+                setFormError(data.error);
+            } else {
+                setFormSuccess('Volunteering Project created successfully');
+                setTitle('');
+                setDescription('');
+                setCategories('');
+                setSkillsRequired('');
+                setVirtualOrInPerson('Virtual');
+                setLocation('');
+                setStartDate('');
+                setEndDate('');
+                setApplicationDeadline('');
+                setOrientationTraining('');
             }
         } catch (err) {
             setFormError(data.error || 'Server error. Please try again later.');
         } finally {
-          clearMessages();
+            clearMessages();
         }
     };
 
     const clearMessages = () => {
-      setTimeout(() => {
-        setFormError(null);
-        setFormSuccess(null);
-      }, 5000);
+        setTimeout(() => {
+            setFormError(null);
+            setFormSuccess(null);
+        }, 5000);
     };
 
     return (
@@ -78,120 +78,124 @@ export default function CreateOpportunity() {
             <form onSubmit={handleSubmit} className="w-full">
                 <div>
                     <label className="block text-[#333333] mb-1" htmlFor="title">Title</label>
-                    <TextInput 
+                    <TextInput
                         id="title"
-                        type="text" 
-                        placeholder="Enter opportunity title" 
-                        value={title} 
-                        onChange={(e) => setTitle(e.target.value)} 
-                        required 
+                        type="text"
+                        placeholder="Enter opportunity title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        required
                         className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
                     />
                 </div>
                 <div>
                     <label className="block text-[#333333] mb-1" htmlFor="description">Description</label>
-                    <Textarea 
+                    <Textarea
                         id="description"
-                        placeholder="Enter opportunity description" 
-                        value={description} 
-                        onChange={(e) => setDescription(e.target.value)} 
-                        required 
+                        placeholder="Enter opportunity description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        required
                         className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
                     />
                 </div>
                 <div>
                     <label className="block text-[#333333] mb-1" htmlFor="categories">Categories</label>
-                    <TextInput 
+                    <TextInput
                         id="categories"
-                        type="text" 
-                        placeholder="Enter categories" 
-                        value={categories} 
-                        onChange={(e) => setCategories(e.target.value)} 
-                        required 
+                        type="text"
+                        placeholder="Enter categories"
+                        value={categories}
+                        onChange={(e) => setCategories(e.target.value)}
+                        required
                         className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
                     />
                 </div>
                 <div>
                     <label className="block text-[#333333] mb-1" htmlFor="skillsRequired">Skills Required</label>
-                    <TextInput 
+                    <TextInput
                         id="skillsRequired"
-                        type="text" 
-                        placeholder="Enter skills required" 
-                        value={skillsRequired} 
-                        onChange={(e) => setSkillsRequired(e.target.value)} 
+                        type="text"
+                        placeholder="Enter skills required"
+                        value={skillsRequired}
+                        onChange={(e) => setSkillsRequired(e.target.value)}
                         className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
                     />
                 </div>
-                <div>
-                    <label className="block text-[#333333] mb-1" htmlFor="virtualOrInPerson">Mode</label>
-                    <Select 
-                        id="virtualOrInPerson"
-                        value={virtualOrInPerson} 
-                        onChange={(e) => setVirtualOrInPerson(e.target.value)} 
-                        required
-                        className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
-                    >
-                        <option value="Virtual">Virtual</option>
-                        <option value="In-Person">In-Person</option>
-                    </Select>
-                </div>
-                {virtualOrInPerson === 'In-Person' && (
+                <div className='flex gap-6'>
                     <div>
-                        <label className="block text-[#333333] mb-1" htmlFor="location">Location</label>
-                        <TextInput 
-                            id="location"
-                            type="text" 
-                            placeholder="Enter location" 
-                            value={location} 
-                            onChange={(e) => setLocation(e.target.value)} 
-                            required 
+                        <label className="block text-[#333333] mb-1" htmlFor="virtualOrInPerson">Mode</label>
+                        <Select
+                            id="virtualOrInPerson"
+                            value={virtualOrInPerson}
+                            onChange={(e) => setVirtualOrInPerson(e.target.value)}
+                            required
+                            className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
+                        >
+                            <option value="Virtual">Virtual</option>
+                            <option value="In-Person">In-Person</option>
+                        </Select>
+                    </div>
+                    {virtualOrInPerson === 'In-Person' && (
+                        <div>
+                            <label className="block text-[#333333] mb-1" htmlFor="location">Location</label>
+                            <TextInput
+                                id="location"
+                                type="text"
+                                placeholder="Enter location"
+                                value={location}
+                                onChange={(e) => setLocation(e.target.value)}
+                                required
+                                className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1] w-full"
+                            />
+                        </div>
+                    )}
+                </div>
+                <div className='flex gap-15'>
+                    <div className='mr-9'>
+                        <label className="block text-[#333333] mb-1" htmlFor="startDate">Start Date</label>
+                        <TextInput
+                            id="startDate"
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            required
                             className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
                         />
                     </div>
-                )}
-                <div>
-                    <label className="block text-[#333333] mb-1" htmlFor="startDate">Start Date</label>
-                    <TextInput 
-                        id="startDate"
-                        type="date" 
-                        value={startDate} 
-                        onChange={(e) => setStartDate(e.target.value)} 
-                        required 
-                        className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
-                    />
+                    <div className='mr-9'>
+                        <label className="block text-[#333333] mb-1" htmlFor="endDate">End Date</label>
+                        <TextInput
+                            id="endDate"
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            required
+                            className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
+                        />
+                    </div>
+                    <div className='mr-9'>
+                        <label className="block text-[#333333] mb-1" htmlFor="applicationDeadline">Application Deadline</label>
+                        <TextInput
+                            id="applicationDeadline"
+                            type="date"
+                            value={applicationDeadline}
+                            onChange={(e) => setApplicationDeadline(e.target.value)}
+                            required
+                            className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
+                        />
+                    </div>
                 </div>
                 <div>
-                    <label className="block text-[#333333] mb-1" htmlFor="endDate">End Date</label>
-                    <TextInput 
-                        id="endDate"
-                        type="date" 
-                        value={endDate} 
-                        onChange={(e) => setEndDate(e.target.value)} 
-                        required 
-                        className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
-                    />
-                </div>
-                <div>
-                    <label className="block text-[#333333] mb-1" htmlFor="applicationDeadline">Application Deadline</label>
-                    <TextInput 
-                        id="applicationDeadline"
-                        type="date" 
-                        value={applicationDeadline} 
-                        onChange={(e) => setApplicationDeadline(e.target.value)} 
-                        required 
-                        className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
-                    />
-                </div>
-                <div>
-                    <label className="block text-[#333333] mb-1" htmlFor="orientationTraining">Orientation & Training</label>
-                    <Textarea 
-                        id="orientationTraining"
-                        placeholder="Enter orientation & training details" 
-                        value={orientationTraining} 
-                        onChange={(e) => setOrientationTraining(e.target.value)} 
-                        className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
-                    />
-                </div>
+                        <label className="block text-[#333333] mb-1" htmlFor="orientationTraining">Orientation & Training</label>
+                        <Textarea
+                            id="orientationTraining"
+                            placeholder="Enter orientation & training details"
+                            value={orientationTraining}
+                            onChange={(e) => setOrientationTraining(e.target.value)}
+                            className="rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#1aac83] bg-[#f1f1f1]"
+                        />
+                    </div>
                 <Button type="submit" color="green" className="m-7 w-1/2 bg-[#1aac83] hover:text-[#1aac83] text-white mx-auto">
                     Create Volunteering Project
                 </Button>

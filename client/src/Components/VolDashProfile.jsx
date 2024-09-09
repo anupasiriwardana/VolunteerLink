@@ -134,6 +134,11 @@ export default function VolunteerProfile() {
       clearMessages();
       return;
     }
+
+    if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(volunteerData.email))){
+      setForm2Error('Invalid email address');
+      return;
+    }
     try {
       const response = await fetch(`/api/volunteer/profile/${currentUser.user._id}`, {
         method: 'PATCH',

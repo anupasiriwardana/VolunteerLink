@@ -80,9 +80,11 @@ export default function RecDashOrgRecProfile() {
       setactivityError('No changes made');
       return;
     }
-    if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fetchedDetails.email))){
-      setactivityError('Invalid email address');
-      return;
+    if(profileForm.email){
+      if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileForm.email) )){
+        setactivityError('Invalid email address');
+        return;
+      }
     }
     try {
       console.log(currentUser.user._id);

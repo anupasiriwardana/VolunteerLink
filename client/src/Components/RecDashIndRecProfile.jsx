@@ -21,6 +21,7 @@ export default function RecDashIndRecProfile() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [ updateTry, setUpdateTry ] = useState(false);
+    const [ saveDetailsTry, setSaveDetailsTry ] = useState(false);
 
     useEffect ( () => {
       const fetchIndeRecDetails = async () => {
@@ -38,27 +39,25 @@ export default function RecDashIndRecProfile() {
     }, [currentUser.user._id])
 
     useEffect(() => {
-      if (Object.keys(fetchedDetails).length > 0) {
           setProfileForm({
               fname: fetchedDetails.firstName,
               lname: fetchedDetails.lastName,
               email: fetchedDetails.email,
               password: ''
           });
-          setIndependentForm({
-              linkedInProfile: fetchedDetails.linkedInProfile,
-              website: fetchedDetails.website,
-              phoneNo: fetchedDetails.phoneNo,
-              nicNo: fetchedDetails.nicNo,
-              country: fetchedDetails.country,
-              city: fetchedDetails.city,
-              address: fetchedDetails.address,
-              services: fetchedDetails.services
-          });
-      }
+          if(/^[0-9]+$/.test(fetchedDetails.phoneNo)){
+            setIndependentForm({
+                linkedInProfile: fetchedDetails.linkedInProfile,
+                website: fetchedDetails.website,
+                phoneNo: fetchedDetails.phoneNo,
+                nicNo: fetchedDetails.nicNo,
+                country: fetchedDetails.country,
+                city: fetchedDetails.city,
+                address: fetchedDetails.address,
+                services: fetchedDetails.services
+            });
+          }
     }, [fetchedDetails])
-
-    // console.log(profileForm,independentForm)
 
     const handleProfileChange = (e) => {
       setProfileForm({...profileForm, [e.target.id]: e.target.value})
@@ -82,11 +81,14 @@ export default function RecDashIndRecProfile() {
     };
     // Validation function for independentForm
     const validateIndependentForm = () => {
+      if(Object.keys(independentForm).length === 0){  //to check uf profileData object is empty
+        setactivityError('Independent Recruiter Details need to be saved');
+        return;
+      }
       if (!/^[0-9]+$/.test(independentForm.phoneNo)) {
         setactivityError("Contact number is invalid.");
         return false;
       }
-      // Add more checks here if needed for other fields
       return true;
     };
 
@@ -125,11 +127,9 @@ export default function RecDashIndRecProfile() {
 
     const handleSaveIndRecDetails = async (e) => {
       e.preventDefault();
+      setSaveDetailsTry(true);
       setActivitySuccess(null);
-      if(Object.keys(independentForm).length === 0){  //to check uf profileData object is empty
-        setactivityError('No changes made');
-        return;
-      }
+      
       if (!validateIndependentForm()) {
         return;
       }
@@ -263,7 +263,7 @@ export default function RecDashIndRecProfile() {
         </div>
 
         { activitySuccess && (<Alert color='success' className='mt-5 items center'>{activitySuccess}</Alert>) }
-        { updateTry && activityError && (<Alert color='failure' className='mt-5 items-center'>{activityError}</Alert>) }
+        { (updateTry || saveDetailsTry) && activityError && (<Alert color='failure' className='mt-5 items-center'>{activityError}</Alert>) }
 
         <Modal show={showModal} onClose={ ()=>setShowModal(false) } popup size='md'>
             <Modal.Header />

@@ -180,8 +180,8 @@ export default function RecDashIndRecProfile() {
     }
 
     return (
-    <div className='max-w-2xl mx-auto p-3 w-full'>
-        <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
+    <div className='max-w-3xl mx-auto w-full bg-slate-50 mt-20 mb-20 p-14 border border-gray-100 shadow-lg'>
+        <h1 className='mb-10 text-center font-bold text-3xl'>Profile</h1>
         <form>
           <div className='max-w-2xl flex flex-grow flex-col'>
             <div className='border border-gray-500 rounded-2xl p-4 mb-3'>
@@ -262,8 +262,8 @@ export default function RecDashIndRecProfile() {
             <span  className='cursor-pointer' onClick={handleRecruiterSignout}>Sign Out</span>
         </div>
 
-        { activitySuccess && (<Alert color='success' className='mt-5'>{activitySuccess}</Alert>) }
-        { updateTry && activityError && (<Alert color='failure' className='mt-5'>{activityError}</Alert>) }
+        { activitySuccess && (<Alert color='success' className='mt-5 items center'>{activitySuccess}</Alert>) }
+        { updateTry && activityError && (<Alert color='failure' className='mt-5 items-center'>{activityError}</Alert>) }
 
         <Modal show={showModal} onClose={ ()=>setShowModal(false) } popup size='md'>
             <Modal.Header />

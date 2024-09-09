@@ -253,11 +253,11 @@ export default function RecDashOrgRecProfile() {
 
 
   return (
-    <div className='min-w-80vw mx-auto p-3 '>
-      <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
+    <div className='min-w-80vw mx-auto bg-slate-50 mt-20 mb-20 p-14 border border-gray-100 shadow-lg'>
       <form className='flex flex-col' >
-        <div className=' flex flex-col md:flex-row gap-5 h-min'>
-          <div className='flex flex-col gap-5 border border-gray-500 rounded-2xl p-4'>
+      <h1 className=' text-center text-3xl font-bold mb-10 '>Profile</h1>
+        <div className=' flex flex-col md:flex-row gap-5 h-min '>
+          <div className='flex flex-col gap-5 border border-gray-500  p-4 rounded-2xl'>
             <div className='sm:flex justify-between mb-5 gap-5'>
               <div>
                 <Label value='First name' />
@@ -351,8 +351,8 @@ export default function RecDashOrgRecProfile() {
         <span className='cursor-pointer' onClick={handleRecruiterSignout}>Sign Out</span>
       </div>
 
-      {activitySuccess && (<Alert color='success' className='mt-5'>{activitySuccess}</Alert>)}
-      {activityError && (<Alert color='failure' className='mt-5'>{activityError}</Alert>)}
+      {activitySuccess && (<Alert color='success' className='mt-5 items-center'>{activitySuccess}</Alert>)}
+      {activityError && (<Alert color='failure' className='mt-5 items-center'>{activityError}</Alert>)}
 
       <Modal show={showModal} onClose={() => setShowModal(false)} popup size='md'>
         <Modal.Header />

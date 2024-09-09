@@ -74,7 +74,7 @@ export default function VolunteerProfile() {
       }
     };
     fetchVolunteerData();
-  }, [form1Success, form2Success]);
+  }, [currentUser.user._id,form1Success, form2Success]);
 
   const handleVolunteerChange = (e) => {
     const { id, value } = e.target;

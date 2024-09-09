@@ -108,7 +108,7 @@ export default function Dashboard() {
 
 
   return (
-    <div className='min-h-screen flex flex-col md:flex-row'>
+    <div className='min-h-screen flex flex-col md:flex-row bg-slate-100'>
       <div className='md:w-56'>
         {/* Sidebar */}
         <RecDashSidebar/>
